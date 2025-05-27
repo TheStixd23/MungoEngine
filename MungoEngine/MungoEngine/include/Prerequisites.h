@@ -1,6 +1,6 @@
 #pragma once
-// Librerias STD
 
+//Librerias STD
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -10,7 +10,8 @@
 #include <fstream>
 #include <unordered_map>
 
-// Third Parties
+
+//Third Parties
 #include <SFML/Graphics.hpp>
 
 // Imgui
@@ -34,3 +35,13 @@
     std::cerr << os_.str();                                       \
     exit(1);                                                      \
 }
+
+//Enums
+enum
+    ShapeType {
+    EMPTY = 0,
+    CIRCLE = 1,
+    RECTANGLE = 2,
+    TRIANGLE = 3,
+    POLYGON = 4
+};

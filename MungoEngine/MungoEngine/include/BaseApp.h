@@ -1,34 +1,42 @@
+// Estilo de codificación:
+// - camelCase para variables y métodos
+// - PascalCase para clases
+// - Tabulación: 2 espacios
+// - Líneas de 80 a 90 caracteres máximo
+// - Prefijo g_ para variables globales
+// - Las clases y estructuras se definen con la llave de apertura en la misma línea
+// - Los métodos dentro de clases se declaran con salto de línea entre el tipo y el nombre
+// - La apertura del cuerpo del método se realiza en una nueva línea
+
 #pragma once
 #include "Prerequisites.h"
-
-class BaseApp {
+#include "Window.h"
+class BaseApp
+{
 public:
 	BaseApp() = default;
-	~BaseApp()=default;
+	~BaseApp();
 
-// Funcion encargada de ejecutar la aplicacion en main
-int
-run();
-	
-// Funcion de inicializacion
-bool
-init();
+	//execution of the app in main
+	int
+		run();
 
-// Funcion que se actualiza por frame
-void
-update();
-	
-// Funcion de renderizado
-void
-render();
+	//initialization function
+	bool
+		init();
 
-void
-destroy();
+	//per-frame update function
+	void
+		update();
 
-void
-handleEvents();
+	//rendering function
+	void
+		render();
+
+	void
+		Destroy();
 
 private:
-	sf::RenderWindow* m_window;
+	Window* m_window;
 	sf::CircleShape* m_circle;
 };
