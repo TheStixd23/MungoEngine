@@ -1,42 +1,82 @@
-// Estilo de codificación:
-// - camelCase para variables y métodos
-// - PascalCase para clases
-// - Tabulación: 2 espacios
-// - Líneas de 80 a 90 caracteres máximo
-// - Prefijo g_ para variables globales
-// - Las clases y estructuras se definen con la llave de apertura en la misma línea
-// - Los métodos dentro de clases se declaran con salto de línea entre el tipo y el nombre
-// - La apertura del cuerpo del método se realiza en una nueva línea
+/**
+ * @file BaseApp.h
+ * @author Hannin Abarca
+ * @brief Declaración de la clase BaseApp, que controla el ciclo de vida principal
+ * de la aplicación, incluyendo inicialización, actualización,
+ * renderizado y destrucción de recursos
+ * @version 1.0
+ * @date 2025-06-01
+ */
 
 #pragma once
+
 #include "Prerequisites.h"
 #include "Window.h"
-class BaseApp
-{
+
+/**
+ * @class BaseApp
+ * @brief Clase principal que controla el ciclo de vida de una aplicación.
+ * Encargada de inicializar, actualizar, renderizar y destruir los componentes
+ * principales. Contiene punteros a la ventana y objetos gráficos
+ */
+class BaseApp {
 public:
-	BaseApp() = default;
-	~BaseApp();
+    /**
+     * @brief Constructor por defecto de la aplicación
+     */
+    BaseApp() = default;
 
-	//execution of the app in main
-	int
-		run();
+    /**
+     * @brief Destructor. Libera recursos utilizados por la aplicación
+     */
+    ~BaseApp();
 
-	//initialization function
-	bool
-		init();
+    /**
+     * @brief Ejecuta el ciclo principal de la aplicación.
+     *
+     * Este método es llamado desde `main()` y controla el flujo principal
+     *
+     * @return Código de salida de la aplicación
+     */
+    int
+        run();
 
-	//per-frame update function
-	void
-		update();
+    /**
+     * @brief Inicializa los recursos de la aplicación
+     *
+     * Debe llamarse antes del ciclo de actualización/renderizado
+     *
+     * @return true si la inicialización fue exitosa; false en caso contrario
+     */
+    bool
+        init();
 
-	//rendering function
-	void
-		render();
+    /**
+     * @brief Actualiza la lógica de la aplicación por fotograma
+     */
+    void
+        update();
 
-	void
-		Destroy();
+    /**
+     * @brief Renderiza los elementos gráficos en pantalla
+     */
+    void
+        render();
+
+    /**
+     * @brief Libera recursos y cierra correctamente la aplicación
+     */
+    void
+        Destroy();
 
 private:
-	Window* m_window;
-	sf::CircleShape* m_circle;
+    /**
+     * @brief Puntero a la ventana principal de la aplicación
+     */
+    Window* m_window;
+
+    /**
+     * @brief Puntero a una forma de círculo usada para renderizado
+     */
+    sf::CircleShape* m_circle;
 };
