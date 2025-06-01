@@ -11,6 +11,10 @@
 #include "CShape.h"
 #include "Window.h"
 
+Cshape::~Cshape()
+{
+}
+
 sf::Shape*
 Cshape::createShape(ShapeType shapeType)
 {
@@ -57,6 +61,10 @@ Cshape::createShape(ShapeType shapeType)
 		break;
 	}
 	return nullptr;
+}
+
+void Cshape::update(float deltaTime)
+{
 }
 
 void
