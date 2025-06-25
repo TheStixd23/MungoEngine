@@ -8,29 +8,19 @@
 
 #include "BaseApp.h"
 
- /**
-  * @brief Destructor de BaseApp, libera recursos
-  */
-BaseApp::~BaseApp()
-{
+BaseApp::~BaseApp() {
+    Destroy();
 }
 
-/**
- * @brief Método principal que ejecuta el ciclo de la aplicación
- *
- * Inicializa, procesa eventos, actualiza y renderiza hasta que se cierra la ventana
- *
- */
-int
-BaseApp::run()
-{
+int BaseApp::run() {
     if (!init()) {
         ERROR("BaseApp",
             "run",
             "Initializes result on a false statement, check method validations");
+        return -1; // Salir si falla la inicialización
     }
 
-    while (m_window->isOpen()) {
+    while (m_window && m_window->isOpen()) {
         m_window->handleEvents();
         update();
         render();
@@ -40,49 +30,38 @@ BaseApp::run()
     return 0;
 }
 
-/**
- * @brief Inicializa la aplicación creando la ventana y configurando elementos
- *
- * @return true Si la inicialización fue exitosa
- * @return false Si hubo algún error
- */
-bool
-BaseApp::init()
-{
+bool BaseApp::init() {
     m_window = new Window(800, 600, "MungoEngine");
 
-    m_circle = new sf::CircleShape(100.0f);  ///< Crea un círculo con radio 100
+    m_circle = new sf::CircleShape(100.0f);  // Crea un círculo con radio 100
     m_circle->setFillColor(sf::Color::Magenta);
     m_circle->setPosition(200.f, 150.f);
 
     return true;
 }
 
-/**
- * @brief Actualiza el estado de la aplicación por frame
- */
-void
-BaseApp::update()
-{
+void BaseApp::update() {
+    // Aquí va la lógica de actualización si se necesita
 }
 
-/**
- * @brief Renderiza los elementos en la ventana
- */
-void
-BaseApp::render()
-{
-    m_window->clear();
-    m_window->draw(*m_circle);
-    m_window->display();
+void BaseApp::render() {
+    if (m_window) {
+        m_window->clear();
+        if (m_circle) {
+            m_window->draw(*m_circle);
+        }
+        m_window->display();
+    }
 }
 
-/**
- * @brief Destruye y libera recursos usados por la aplicación
- */
-void
-BaseApp::Destroy()
-{
-    delete m_circle;
-    m_window->destroy();
+void BaseApp::Destroy() {
+    if (m_circle) {
+        delete m_circle;
+        m_circle = nullptr;
+    }
+    if (m_window) {
+        m_window->destroy();
+        delete m_window;
+        m_window = nullptr;
+    }
 }

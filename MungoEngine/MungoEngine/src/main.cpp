@@ -8,12 +8,7 @@
 
 #include "BaseApp.h"
 
- /**
-  * @brief Función principal que crea la instancia de BaseApp y ejecuta el ciclo
-  */
-int
-main()
-{
-	BaseApp app;
-	return app.run();
+int main() {
+    BaseApp app;
+    return app.run();
 }

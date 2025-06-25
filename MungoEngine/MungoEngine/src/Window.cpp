@@ -6,17 +6,9 @@
  * @date 2025-06-01
  */
 
-#include "window.h"
+#include "Window.h"
 
- /**
-  * @brief Constructor que crea una nueva ventana con dimensiones y título
-  *
-  * @param width  Ancho de la ventana
-  * @param height Alto de la ventana
-  * @param title  Título de la ventana
-  */
-Window::Window(int width, int height, const std::string& title)
-{
+Window::Window(int width, int height, const std::string& title) {
     m_window = new sf::RenderWindow(sf::VideoMode(width, height), title);
 
     if (m_window) {
@@ -28,20 +20,11 @@ Window::Window(int width, int height, const std::string& title)
     }
 }
 
-/**
- * @brief Destructor. Libera la memoria de la ventana
- */
-Window::~Window()
-{
+Window::~Window() {
     SAFE_PTR_RELEASE(m_window);
 }
 
-/**
- * @brief Maneja eventos de la ventana (como cerrar)
- */
-void
-Window::handleEvents()
-{
+void Window::handleEvents() {
     sf::Event event;
     while (m_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
@@ -49,16 +32,9 @@ Window::handleEvents()
     }
 }
 
-/**
- * @brief Verifica si la ventana está abierta
- *
- * @return true si la ventana está abierta, false si es nula o cerrada
- */
-bool
-Window::isOpen() const
-{
+bool Window::isOpen() const {
     if (m_window) {
-        m_window->isOpen();
+        return m_window->isOpen();
     }
     else {
         ERROR("Window", "isOpen", "Window is null");
@@ -66,14 +42,7 @@ Window::isOpen() const
     }
 }
 
-/**
- * @brief Limpia la ventana con un color dado
- *
- * @param color Color de fondo para limpiar la ventana
- */
-void
-Window::clear(const sf::Color& color)
-{
+void Window::clear(const sf::Color& color) {
     if (m_window) {
         m_window->clear(color);
     }
@@ -82,15 +51,7 @@ Window::clear(const sf::Color& color)
     }
 }
 
-/**
- * @brief Dibuja un objeto renderizable en la ventana
- *
- * @param drawable Objeto a dibujar (como shape, sprite, texto)
- * @param states   Estados de renderizado opcionales
- */
-void
-Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
-{
+void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states) {
     if (m_window) {
         m_window->draw(drawable, states);
     }
@@ -99,12 +60,7 @@ Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
     }
 }
 
-/**
- * @brief Muestra el contenido renderizado en la ventana
- */
-void
-Window::display()
-{
+void Window::display() {
     if (m_window) {
         m_window->display();
     }
@@ -113,11 +69,6 @@ Window::display()
     }
 }
 
-/**
- * @brief Cierra y libera la memoria de la ventana
- */
-void
-Window::destroy()
-{
+void Window::destroy() {
     SAFE_PTR_RELEASE(m_window);
 }
