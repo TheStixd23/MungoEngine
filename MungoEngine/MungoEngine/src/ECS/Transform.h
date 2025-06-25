@@ -15,38 +15,46 @@ public:
 
     virtual ~Transform() = default;
 
-    void setPosition(const sf::Vector2f& position) 
+    void start() override {}
+
+    void update(float deltaTime) override {}
+
+    void render(const EngineUtilities::TSharedPointer<Window>& window) override {}
+
+    void destroy() override {}
+
+    void setPosition(const sf::Vector2f& position)
     {
-        m_position = position; 
-    }
-    
-    void setRotation(float rotation) 
-    {
-        m_rotation = rotation; 
-    }
-    
-    void setScale(const sf::Vector2f& scale) 
-    { 
-        m_scale = scale; 
+        m_position = position;
     }
 
-    const sf::Vector2f& getPosition() const 
+    void setRotation(float rotation)
     {
-        return m_position; 
+        m_rotation = rotation;
     }
 
-    float getRotation() const 
+    void setScale(const sf::Vector2f& scale)
+    {
+        m_scale = scale;
+    }
+
+    const sf::Vector2f& getPosition() const
+    {
+        return m_position;
+    }
+
+    float getRotation() const
     {
         return m_rotation;
     }
 
-    const sf::Vector2f& getScale() const 
+    const sf::Vector2f& getScale() const
     {
         return m_scale;
     }
 
 private:
     sf::Vector2f m_position;
-    sf::Vector2f m_rotation;
+    float m_rotation;
     sf::Vector2f m_scale;
 };
