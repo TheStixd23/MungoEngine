@@ -17,6 +17,8 @@
 #include <map>
 #include <fstream>
 #include <unordered_map>
+#include <cmath>
+#include <cassert>
 
 // Librerías de terceros
 #include <SFML/Graphics.hpp>
