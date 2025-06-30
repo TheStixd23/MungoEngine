@@ -2,60 +2,60 @@
 #include "../Prerequisites.h"
 #include <iostream>
 
-class Vector2 {
+class CVector2 {
 public:
     float x, y;
 
-    Vector2() { x = 0;  y = 0; }
-    Vector2(float X, float Y) { x = X;  y = Y; }
+    CVector2() { x = 0;  y = 0; }
+    CVector2(float X, float Y) { x = X;  y = Y; }
 
-    Vector2 operator+(const Vector2& o) const
+    CVector2 operator+(const CVector2& o) const
     {
-        return Vector2(x + o.x, y + o.y);
+        return CVector2(x + o.x, y + o.y);
     }
-    Vector2 operator-(const Vector2& o) const
+    CVector2 operator-(const CVector2& o) const
     {
-        return Vector2(x - o.x, y - o.y);
+        return CVector2(x - o.x, y - o.y);
     }
-    Vector2 operator*(float s) const
+    CVector2 operator*(float s) const
     {
-        return Vector2(x * s, y * s);
+        return CVector2(x * s, y * s);
     }
-    Vector2 operator/(float s) const
+    CVector2 operator/(float s) const
     {
-        return Vector2(x / s, y / s);
+        return CVector2(x / s, y / s);
     }
-    Vector2 operator-() const
+    CVector2 operator-() const
     {
-        return Vector2(-x, -y);
+        return CVector2(-x, -y);
     }
 
-    Vector2& operator+=(const Vector2& o)
+    CVector2& operator+=(const CVector2& o)
     {
         x += o.x; y += o.y;
         return *this;
     }
-    Vector2& operator-=(const Vector2& o)
+    CVector2& operator-=(const CVector2& o)
     {
         x -= o.x; y -= o.y;
         return *this;
     }
-    Vector2& operator*=(float s)
+    CVector2& operator*=(float s)
     {
         x *= s; y *= s;
         return *this;
     }
-    Vector2& operator/=(float s)
+    CVector2& operator/=(float s)
     {
         x /= s; y /= s;
         return *this;
     }
 
-    bool operator==(const Vector2& o) const
+    bool operator==(const CVector2& o) const
     {
         return x == o.x && y == o.y;
     }
-    bool operator!=(const Vector2& o) const
+    bool operator!=(const CVector2& o) const
     {
         return !(*this == o);
     }
@@ -69,19 +69,19 @@ public:
         return std::sqrt(x * x + y * y);
     }
 
-    float dot(const Vector2& o) const
+    float dot(const CVector2& o) const
     {
         return x * o.x + y * o.y;
     }
-    float cross(const Vector2& o) const
+    float cross(const CVector2& o) const
     {
         return x * o.y - y * o.x;
     }
 
-    Vector2 normalized() const
+    CVector2 normalized() const
     {
         float L = length();
-        return (L > 0) ? Vector2(x / L, y / L) : Vector2();
+        return (L > 0) ? CVector2(x / L, y / L) : CVector2();
     }
     void normalize()
     {
@@ -89,28 +89,28 @@ public:
         if (L > 0) { x /= L; y /= L; }
     }
 
-    static Vector2 zero()
+    static CVector2 zero()
     {
-        return Vector2(0, 0);
+        return CVector2(0, 0);
     }
-    static Vector2 one()
+    static CVector2 one()
     {
-        return Vector2(1, 1);
+        return CVector2(1, 1);
     }
-    static float distance(const Vector2& a, const Vector2& b)
+    static float distance(const CVector2& a, const CVector2& b)
     {
         return (b - a).length();
     }
-    static Vector2 lerp(const Vector2& a, const Vector2& b, float t)
+    static CVector2 lerp(const CVector2& a, const CVector2& b, float t)
     {
-        return Vector2(
+        return CVector2(
             a.x + (b.x - a.x) * t,
             a.y + (b.y - a.y) * t
         );
     }
 };
 
-inline std::ostream& operator<<(std::ostream& os, const Vector2& v)
+inline std::ostream& operator<<(std::ostream& os, const CVector2& v)
 {
     return os << "(" << v.x << ", " << v.y << ")";
 }
