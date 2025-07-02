@@ -1,5 +1,5 @@
 #include "ECS/Actor.h"
-#include <ESC/Actor.h>
+#include <ranges>
 
 Actor::Actor(const std::string& actorName) {
     // Setup Actor Name
@@ -9,23 +9,40 @@ Actor::Actor(const std::string& actorName) {
     EngineUtilities::TSharedPointer<CShape> shape = EngineUtilities::MakeShared<CShape>();
     addComponent(shape);
 
-    // Setup Transform (comentado, lo dejo así para que actives si quieres)
-    // EngineUtilities::TSharedPointer<Transform> transform = EngineUtilities::MakeShared<Transform>();
-    // addComponent(transform);
+    // Setup Transform
+    EngineUtilities::TSharedPointer<Transform> transform = EngineUtilities::MakeShared<Transform>();
+    addComponent(transform);
 }
 
-void Actor::render(const EngineUtilities::TSharedPointer<Window>& window) {
-    // Implementar renderizado si es necesario
+void
+Actor::render(const EngineUtilities::TSharedPointer<Window>& window) {
+    for (unsigned int i = 0; i < components.size(); i++) {
+        auto component = components[i];
+        if (component) {
+            component->render(window);
+        }
+    }
 }
 
-void Actor::start() {
-    // Código para iniciar el actor
+void
+Actor::start() {
+
 }
 
-void Actor::update(float deltaTime) {
-    // Código para actualizar el actor
+void
+Actor::update(float deltaTime) {
+    auto transform = getComponent<Transform>();
+    auto shape = getComponent<CShape>();
+
+    if (transform && shape) {
+        shape->setPosition(transform->getPosition());
+        shape->setRotation(transform->getRotation().x);
+        shape->setScale(transform->getScale());
+    }
+
 }
 
-void Actor::destroy() {
-    // Código para limpiar o destruir el actor
+void
+Actor::destroy() {
+
 }
