@@ -1,5 +1,7 @@
 #include "ECS/Actor.h"
 #include <ranges>
+#include <ESC/Actor.h>
+#include "Transform.h"
 
 Actor::Actor(const std::string& actorName) {
     // Setup Actor Name

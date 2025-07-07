@@ -1,70 +1,59 @@
-/**
- * @file CShape.h
- * @author Hannin Abarca
- * @brief Declaración de la clase CShape para la definición de figuras geométricas
- * renderizables con SFML. Contiene la interfaz pública y privada para crear,
- * modificar y manipular figuras como círculos, rectángulos, triángulos y polígonos
- * @version 1.0
- * @date 2025-06-01
- */
-
 #pragma once
-
 #include "Prerequisites.h"
-#include "ECS/Component.h"
-
+#include "ECS\Component.h"
+#include <Memory/TWeakPointer.h>
 class Window;
 
-enum ShapeType {
-    EMPTY = 0,
-    CIRCLE,
-    RECTANGLE,
-    TRIANGLE,
-    POLYGON
-};
-
-/**
- * @class CShape
- * @brief Componente que representa una figura geométrica renderizable.
- * Permite crear, actualizar y renderizar figuras SFML como círculos, rectángulos,
- * etc. También da métodos para manipular sus propiedades como posición,
- * rotación, escala y color
- */
-class CShape : public Component {
+class
+	CShape : public Component {
 public:
-    CShape()
-        : m_shapePtr(nullptr),
-        m_shapeType(ShapeType::EMPTY),
-        Component(ComponentType::SHAPE) {
-    }
+	CShape() = default;
 
-    CShape(ShapeType shapeType)
-        : m_shapePtr(nullptr),
-        m_shapeType(ShapeType::EMPTY),
-        Component(ComponentType::SHAPE) {
-        createShape(shapeType);
-    }
+	CShape(ShapeType shapeType) : m_shapePtr(nullptr),
+		m_shapeType(ShapeType::EMPTY),
+		Component(ComponentType::SHAPE) {
+	}
 
-    virtual ~CShape() = default;
+	virtual
+		~CShape() = default;
 
-    void createShape(ShapeType shapeType);
+	/**
+		* @Brief: This method is in charge of creating a shape based on the type provided.
+		* @Param: shapeType: The type of shape to create.
+	  */
+	void
+		createShape(ShapeType shapeType);
 
-    virtual void start() override;
-    virtual void update(float deltaTime) override;
-    virtual void render(const EngineUtilities::TSharedPointer<Window>& window) override;
-    virtual void destroy() override;
+	void
+		start() override;
 
-    void setPosition(float x, float y);
-    void setPosition(const sf::Vector2f& position);
+	void
+		update(float deltaTime) override;
 
-    void setFillColor(const sf::Color& color);
-    void setRotation(float angle);
-    void setScale(const sf::Vector2f& scl);
+	void
+		render(const EngineUtilities::TSharedPointer<Window>& window) override;
 
-    sf::Shape* getShape() { return m_shapePtr; }
+	void
+		destroy() override;
+
+	void
+		setPosition(float x, float y);
+
+	void
+		setPosition(const sf::Vector2f& position);
+
+	void
+		setFillColor(const sf::Color& color);
+
+	void
+		setRotation(float angle);
+
+	void
+		setScale(const sf::Vector2f& scl);
 
 private:
-    sf::Shape* m_shapePtr;
-    ShapeType m_shapeType;
-    sf::VertexArray m_line;
+	EngineUtilities::TSharedPointer<sf::Shape> m_shapePtr;
+	//sf::Shape* m_shape;
+	ShapeType m_shapeType;
+	sf::VertexArray* m_line;
 };
