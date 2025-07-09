@@ -38,6 +38,8 @@
     <ClInclude Include="include\Memory\TWeakPointer.h" />
     <ClInclude Include="include\Prerequisites.h" />
     <ClInclude Include="include\Utilities\CVector2.h" />
+    <ClInclude Include="include\Utilities\CVector3.h" />
+    <ClInclude Include="include\Utilities\CVector4.h" />
     <ClInclude Include="include\Window.h" />
     <ClInclude Include="src\ECS\Transform.h" />
   </ItemGroup>
