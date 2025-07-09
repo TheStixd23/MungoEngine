@@ -1,9 +1,8 @@
-
 #pragma once
 #include "Prerequisites.h"
 #include "Window.h"
 #include "CShape.h"
-#include "ECS/Actor.h"
+#include <ESC/Actor.h>
 class
 	BaseApp {
 public:
