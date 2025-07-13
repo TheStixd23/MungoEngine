@@ -1,14 +1,11 @@
 #pragma once
 
-#include "ECS/Component.h"
+#include "./ESC/Component.h"
 #include <SFML/System/Vector2.hpp>
 
-class
-	window;
+class Window;
 
-class
-	Transform : public Component {
-
+class Transform : public Component {
 public:
 	Transform() :
 		m_position(0.f, 0.f),
@@ -17,52 +14,40 @@ public:
 		Component(ComponentType::TRANSFORM) {
 	}
 
-	virtual
-		~Transform() = default;
-	//metodos de la clase Component
-	void
-		start() override;
+	virtual ~Transform() = default;
 
-	void
-		update(float deltaTime)override;
+	void start() override;
 
-	void
-		render(const EngineUtilities::TSharedPointer<Window>& window)override;
+	void update(float deltaTime) override;
 
-	void
-		destroy() override;
+	void render(const EngineUtilities::TSharedPointer<Window>& window) override;
 
-	//settters
-	void
-		setPosition(const sf::Vector2f& _position) {
+	void destroy() override;
+
+	void setPosition(const sf::Vector2f& _position) {
 		m_position = _position;
 	}
 
-	void
-		setRotation(const sf::Vector2f& _rotation) {
+	void setRotation(const sf::Vector2f& _rotation) {
 		m_rotation = _rotation;
 	}
 
-	void
-		setScale(const sf::Vector2f& _scale) {
+	void setScale(const sf::Vector2f& _scale) {
 		m_scale = _scale;
 	}
 
-	sf::Vector2f&
-		getPosition() {
+	sf::Vector2f& getPosition() {
 		return m_position;
 	}
 
-
-	sf::Vector2f&
-		getRotation() {
+	sf::Vector2f& getRotation() {
 		return m_rotation;
 	}
 
-	sf::Vector2f&
-		getScale() {
+	sf::Vector2f& getScale() {
 		return m_scale;
 	}
+
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_rotation;

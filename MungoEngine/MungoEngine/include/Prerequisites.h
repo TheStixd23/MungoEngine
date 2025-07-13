@@ -1,30 +1,27 @@
 #pragma once
 
-// Librerias STD
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <thread>
 #include <map>
-#include <fstream> 
+#include <fstream>
 #include <unordered_map>
 
-// Third Parties
 #include <SFML/Graphics.hpp>
-#include "Memory\TSharedPointer.h"
-#include "Memory\TWeakPointer.h"
-#include "Memory\TStaticPtr.h"
-#include "Memory\TUniquePtr.h"
+#include "Memory/TSharedPointer.h"
+#include "Memory/TWeakPointer.h"
+#include "Memory/TStaticPtr.h"
+#include "Memory/TUniquePtr.h"
 
-// MACRO for safe release of resources
 #define SAFE_PTR_RELEASE(x) if(x != nullptr) { delete x; x = nullptr; }
 
 #define MESSAGE(classObj, method, state)                      \
 {                                                             \
     std::ostringstream os_;                                   \
     os_ << classObj << "::" << method << " : "                \
-        << "[CREATION OF RESOURCE" << ": " << state "] \n";\
+        << "[CREATION OF RESOURCE" << ": " << state << "] \n";\
     std::cerr << os_.str();                                   \
 }
 
@@ -32,7 +29,7 @@
 {                                                                 \
     std::ostringstream os_;                                       \
     os_ << "ERROR : " << classObj << "::" << method << " : "      \
-        << "  Error in data from params [" << errorMSG"] \n"; \
+        << "  Error in data from params [" << errorMSG << "] \n"; \
     std::cerr << os_.str();                                       \
     exit(1);                                                      \
 }
