@@ -1,3 +1,9 @@
+/**
+ * @file Prerequisites.h
+ * @brief Archivo de cabecera con utilidades, macros y tipos base comunes para todo el motor.
+ * @author Hannin Abarca
+ */
+
 #pragma once
 
 #include <iostream>
@@ -15,8 +21,20 @@
 #include "Memory/TStaticPtr.h"
 #include "Memory/TUniquePtr.h"
 
+ /**
+  * @def SAFE_PTR_RELEASE(x)
+  * @brief Libera un puntero y lo asigna a nullptr de forma segura.
+  */
 #define SAFE_PTR_RELEASE(x) if(x != nullptr) { delete x; x = nullptr; }
 
+  /**
+   * @def MESSAGE(classObj, method, state)
+   * @brief Macro para imprimir un mensaje de creación de recurso al flujo de error estándar.
+   *
+   * @param classObj Nombre de la clase.
+   * @param method Nombre del método.
+   * @param state Estado del recurso creado.
+   */
 #define MESSAGE(classObj, method, state)                      \
 {                                                             \
     std::ostringstream os_;                                   \
@@ -25,6 +43,14 @@
     std::cerr << os_.str();                                   \
 }
 
+   /**
+    * @def ERROR(classObj, method, errorMSG)
+    * @brief Macro para imprimir un mensaje de error y terminar la ejecución.
+    *
+    * @param classObj Nombre de la clase donde ocurrió el error.
+    * @param method Nombre del método donde ocurrió el error.
+    * @param errorMSG Mensaje de error detallado.
+    */
 #define ERROR(classObj, method, errorMSG)                         \
 {                                                                 \
     std::ostringstream os_;                                       \
@@ -34,12 +60,15 @@
     exit(1);                                                      \
 }
 
-// ENUMS
+    /**
+     * @enum ShapeType
+     * @brief Define los tipos de figuras geométricas soportadas por el sistema.
+     */
 enum
     ShapeType {
-    EMPTY = 0,
-    CIRCLE = 1,
-    RECTANGLE = 2,
-    TRIANGLE = 3,
-    POLYGON = 4,
+    EMPTY = 0,     /**< Sin tipo asignado. */
+    CIRCLE = 1,    /**< Círculo. */
+    RECTANGLE = 2, /**< Rectángulo. */
+    TRIANGLE = 3,  /**< Triángulo. */
+    POLYGON = 4    /**< Polígono de múltiples lados. */
 };

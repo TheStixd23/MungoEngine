@@ -1,115 +1,94 @@
+/**
+ * @file CVector2.h
+ * @brief Define la estructura de vector 2D con operaciones básicas de álgebra vectorial para motores gráficos y simulaciones.
+ * @author Hannin Abarca
+ */
+
 #pragma once
 #include "../Prerequisites.h"
 #include <iostream>
 
+ /**
+  * @class CVector2
+  * @brief Representa un vector bidimensional con operaciones matemáticas comunes.
+  */
 class CVector2 {
 public:
-    float x, y;
+    float x, y; ///< Componentes X e Y del vector.
 
+    /**
+     * @brief Constructor por defecto, inicializa a (0, 0).
+     */
     CVector2() { x = 0;  y = 0; }
+
+    /**
+     * @brief Constructor con componentes personalizadas.
+     * @param X Componente X.
+     * @param Y Componente Y.
+     */
     CVector2(float X, float Y) { x = X;  y = Y; }
 
-    CVector2 operator+(const CVector2& o) const
-    {
-        return CVector2(x + o.x, y + o.y);
-    }
-    CVector2 operator-(const CVector2& o) const
-    {
-        return CVector2(x - o.x, y - o.y);
-    }
-    CVector2 operator*(float s) const
-    {
-        return CVector2(x * s, y * s);
-    }
-    CVector2 operator/(float s) const
-    {
-        return CVector2(x / s, y / s);
-    }
-    CVector2 operator-() const
-    {
-        return CVector2(-x, -y);
-    }
+    /// @name Operadores aritméticos
+    /// @{
 
-    CVector2& operator+=(const CVector2& o)
-    {
-        x += o.x; y += o.y;
-        return *this;
-    }
-    CVector2& operator-=(const CVector2& o)
-    {
-        x -= o.x; y -= o.y;
-        return *this;
-    }
-    CVector2& operator*=(float s)
-    {
-        x *= s; y *= s;
-        return *this;
-    }
-    CVector2& operator/=(float s)
-    {
-        x /= s; y /= s;
-        return *this;
-    }
+    CVector2 operator+(const CVector2& o) const;
+    CVector2 operator-(const CVector2& o) const;
+    CVector2 operator*(float s) const;
+    CVector2 operator/(float s) const;
+    CVector2 operator-() const;
 
-    bool operator==(const CVector2& o) const
-    {
-        return x == o.x && y == o.y;
-    }
-    bool operator!=(const CVector2& o) const
-    {
-        return !(*this == o);
-    }
+    CVector2& operator+=(const CVector2& o);
+    CVector2& operator-=(const CVector2& o);
+    CVector2& operator*=(float s);
+    CVector2& operator/=(float s);
 
-    float lengthSq() const
-    {
-        return x * x + y * y;
-    }
-    float length() const
-    {
-        return std::sqrt(x * x + y * y);
-    }
+    /// @}
 
-    float dot(const CVector2& o) const
-    {
-        return x * o.x + y * o.y;
-    }
-    float cross(const CVector2& o) const
-    {
-        return x * o.y - y * o.x;
-    }
+    /// @name Operadores de comparación
+    /// @{
 
-    CVector2 normalized() const
-    {
-        float L = length();
-        return (L > 0) ? CVector2(x / L, y / L) : CVector2();
-    }
-    void normalize()
-    {
-        float L = length();
-        if (L > 0) { x /= L; y /= L; }
-    }
+    bool operator==(const CVector2& o) const;
+    bool operator!=(const CVector2& o) const;
 
-    static CVector2 zero()
-    {
-        return CVector2(0, 0);
-    }
-    static CVector2 one()
-    {
-        return CVector2(1, 1);
-    }
-    static float distance(const CVector2& a, const CVector2& b)
-    {
-        return (b - a).length();
-    }
-    static CVector2 lerp(const CVector2& a, const CVector2& b, float t)
-    {
-        return CVector2(
-            a.x + (b.x - a.x) * t,
-            a.y + (b.y - a.y) * t
-        );
-    }
+    /// @}
+
+    /// @name Magnitudes y normalización
+    /// @{
+
+    float lengthSq() const;       ///< Retorna la magnitud al cuadrado del vector.
+    float length() const;         ///< Retorna la magnitud (longitud) del vector.
+    CVector2 normalized() const;  ///< Retorna una copia normalizada del vector.
+    void normalize();             ///< Normaliza el vector actual in-place.
+
+    /// @}
+
+    /// @name Producto escalar y cruzado
+    /// @{
+
+    float dot(const CVector2& o) const;    ///< Producto punto.
+    float cross(const CVector2& o) const;  ///< Producto cruzado (en 2D, da un escalar).
+
+    /// @}
+
+    /// @name Utilidades estáticas
+    /// @{
+
+    static CVector2 zero();                          ///< Vector (0, 0).
+    static CVector2 one();                           ///< Vector (1, 1).
+    static float distance(const CVector2& a, const CVector2& b); ///< Distancia entre dos vectores.
+    static CVector2 lerp(const CVector2& a, const CVector2& b, float t); ///< Interpolación lineal.
+
+    /// @}
 };
 
+// === Implementación de operadores en línea ===
+
+/**
+ * @brief Operador de inserción para imprimir el vector.
+ * @param os Flujo de salida.
+ * @param v Vector a imprimir.
+ * @return Flujo modificado.
+ */
 inline std::ostream& operator<<(std::ostream& os, const CVector2& v)
 {
     return os << "(" << v.x << ", " << v.y << ")";

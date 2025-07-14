@@ -1,6 +1,11 @@
 #include "CShape.h"
 #include "Window.h"
 
+/**
+ * @brief Crea una figura de tipo Shape utilizando el tipo especificado.
+ *
+ * @param type Tipo de figura a crear (CIRCLE, RECTANGLE, TRIANGLE, POLYGON).
+ */
 void
 CShape::createShape(ShapeType type) {
     m_shapeType = type;
@@ -44,14 +49,28 @@ CShape::createShape(ShapeType type) {
         return;
     }
 }
+
+/**
+ * @brief Método llamado al iniciar el componente. (Vacío por ahora)
+ */
 void
 CShape::start() {
 }
 
+/**
+ * @brief Actualiza la figura en cada frame.
+ *
+ * @param deltaTime Tiempo transcurrido desde el último frame.
+ */
 void
 CShape::update(float deltaTime) {
 }
 
+/**
+ * @brief Dibuja la figura en la ventana.
+ *
+ * @param window Puntero compartido a la ventana donde se dibujará.
+ */
 void
 CShape::render(const EngineUtilities::TSharedPointer<Window>& window) {
     if (m_shapePtr) {
@@ -59,36 +78,64 @@ CShape::render(const EngineUtilities::TSharedPointer<Window>& window) {
     }
 }
 
+/**
+ * @brief Elimina la figura actual y libera los recursos.
+ */
 void
 CShape::destroy() {
     m_shapePtr.reset();
 }
 
+/**
+ * @brief Establece la posición de la figura.
+ *
+ * @param x Coordenada X.
+ * @param y Coordenada Y.
+ */
 void
 CShape::setPosition(float x, float y) {
     if (m_shapePtr) m_shapePtr->setPosition(x, y);
     else ERROR("CShape", "setPosition", "Shape no inicializado");
 }
 
+/**
+ * @brief Establece la posición de la figura.
+ *
+ * @param pos Vector 2D con las coordenadas de posición.
+ */
 void
 CShape::setPosition(const sf::Vector2f& pos) {
     if (m_shapePtr) m_shapePtr->setPosition(pos);
     else ERROR("CShape", "setPosition", "Shape no inicializado");
 }
 
-
+/**
+ * @brief Establece el color de relleno de la figura.
+ *
+ * @param color Color de relleno.
+ */
 void
 CShape::setFillColor(const sf::Color& color) {
     if (m_shapePtr) m_shapePtr->setFillColor(color);
     else ERROR("CShape", "setFillColor", "Shape no inicializado");
 }
 
+/**
+ * @brief Establece la rotación de la figura.
+ *
+ * @param angle Ángulo en grados.
+ */
 void
 CShape::setRotation(float angle) {
     if (m_shapePtr) m_shapePtr->setRotation(angle);
     else ERROR("CShape", "setRotation", "Shape no inicializado");
 }
 
+/**
+ * @brief Establece la escala de la figura.
+ *
+ * @param scale Vector 2D que representa el escalado en X e Y.
+ */
 void
 CShape::setScale(const sf::Vector2f& scale) {
     if (m_shapePtr) m_shapePtr->setScale(scale);

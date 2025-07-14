@@ -1,8 +1,23 @@
+/**
+ * @file BaseApp.cpp
+ * @brief Implementación de la clase BaseApp, encargada del ciclo de vida principal de la aplicación.
+ * @author Hannin Abarca
+ */
+
 #include "BaseApp.h"
 
+ /**
+  * @brief Destructor de BaseApp. Libera recursos si es necesario.
+  */
 BaseApp::~BaseApp() {
 }
 
+/**
+ * @brief Ejecuta el ciclo principal de la aplicación.
+ *
+ * Inicializa los recursos, entra en el bucle principal y destruye todo al finalizar.
+ * @return Código de salida (0 si fue exitoso).
+ */
 int
 BaseApp::run() {
 	if (!init()) {
@@ -21,6 +36,10 @@ BaseApp::run() {
 	return 0;
 }
 
+/**
+ * @brief Inicializa la aplicación: crea la ventana, figuras y actores necesarios.
+ * @return true si la inicialización fue exitosa, false en caso contrario.
+ */
 bool
 BaseApp::init() {
 	m_windowPtr = EngineUtilities
@@ -50,15 +69,19 @@ BaseApp::init() {
 	return true;
 }
 
+/**
+ * @brief Actualiza los actores de la escena.
+ */
 void
 BaseApp::update() {
-
 	if (!m_ACircle.isNull()) {
 		m_ACircle->update(0);
 	}
-
 }
 
+/**
+ * @brief Renderiza los elementos visibles en la ventana.
+ */
 void
 BaseApp::render() {
 	if (!m_windowPtr) {
@@ -72,10 +95,11 @@ BaseApp::render() {
 		m_ACircle->render(m_windowPtr);
 	}
 	m_windowPtr->display();
-
-
 }
 
+/**
+ * @brief Método de limpieza de recursos, llamado al finalizar la aplicación.
+ */
 void
 BaseApp::destroy() {
 }
