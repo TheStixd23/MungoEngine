@@ -80,12 +80,6 @@
     <ClInclude Include="include\CShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Utilities\CVector3.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utilities\CVector4.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="include\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>

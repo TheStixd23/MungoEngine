@@ -12,7 +12,8 @@ CShape::createShape(ShapeType type) {
         break;
     }
     case ShapeType::RECTANGLE: {
-        auto rectSP = EngineUtilities::MakeShared<sf::RectangleShape>(sf::Vector2f(100.f, 50.f));
+        auto rectSP = EngineUtilities::MakeShared<sf::RectangleShape>
+            (sf::Vector2f(100.f, 50.f));
         rectSP->setFillColor(sf::Color::White);
         m_shapePtr = rectSP.dynamic_pointer_cast<sf::Shape>();
         break;
@@ -58,32 +59,38 @@ CShape::render(const EngineUtilities::TSharedPointer<Window>& window) {
     }
 }
 
-void CShape::destroy() {
+void
+CShape::destroy() {
     m_shapePtr.reset();
 }
 
-void CShape::setPosition(float x, float y) {
+void
+CShape::setPosition(float x, float y) {
     if (m_shapePtr) m_shapePtr->setPosition(x, y);
     else ERROR("CShape", "setPosition", "Shape no inicializado");
 }
 
-void CShape::setPosition(const sf::Vector2f& pos) {
+void
+CShape::setPosition(const sf::Vector2f& pos) {
     if (m_shapePtr) m_shapePtr->setPosition(pos);
     else ERROR("CShape", "setPosition", "Shape no inicializado");
 }
 
 
-void CShape::setFillColor(const sf::Color& color) {
+void
+CShape::setFillColor(const sf::Color& color) {
     if (m_shapePtr) m_shapePtr->setFillColor(color);
     else ERROR("CShape", "setFillColor", "Shape no inicializado");
 }
 
-void CShape::setRotation(float angle) {
+void
+CShape::setRotation(float angle) {
     if (m_shapePtr) m_shapePtr->setRotation(angle);
     else ERROR("CShape", "setRotation", "Shape no inicializado");
 }
 
-void CShape::setScale(const sf::Vector2f& scale) {
+void
+CShape::setScale(const sf::Vector2f& scale) {
     if (m_shapePtr) m_shapePtr->setScale(scale);
     else ERROR("CShape", "setScale", "Shape no inicializado");
 }

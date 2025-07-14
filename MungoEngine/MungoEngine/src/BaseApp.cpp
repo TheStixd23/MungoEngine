@@ -24,7 +24,7 @@ BaseApp::run() {
 bool
 BaseApp::init() {
 	m_windowPtr = EngineUtilities
-		::MakeShared<Window>(1920, 1080, "VektorCoreEngine");
+		::MakeShared<Window>(1920, 1080, "MungoEngine");
 	if (!m_windowPtr) {
 		ERROR("BaseApp",
 			"init",
