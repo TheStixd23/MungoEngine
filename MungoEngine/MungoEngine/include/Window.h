@@ -1,72 +1,93 @@
-/**
- * @file Window.h
- * @brief Define la clase Window que encapsula una ventana de renderizado SFML para uso interno del motor gráfico.
- * @author Hannin Abarca
- */
-
 #pragma once
 #include "Prerequisites.h"
 
- /**
-  * @class Window
-  * @brief Encapsula una ventana SFML para manejo de eventos, dibujo y visualización.
-  */
-class Window {
+/**
+ * @class Window
+ * @brief Manages an SFML window instance for rendering and input handling.
+ *
+ * This class encapsulates the SFML RenderWindow, handling its creation,
+ * event processing, drawing operations, and cleanup.
+ */
+class
+	Window {
 public:
+
 	/**
-	 * @brief Constructor por defecto.
+	 * @brief Default constructor.
 	 */
 	Window() = default;
 
 	/**
-	 * @brief Constructor que crea una ventana con dimensiones y título específicos.
-	 * @param width Ancho de la ventana.
-	 * @param height Alto de la ventana.
-	 * @param title Título de la ventana.
+	 * @brief Constructs a window with given width, height, and title.
+	 * @param width Width of the window in pixels.
+	 * @param height Height of the window in pixels.
+	 * @param title Title of the window.
 	 */
 	Window(int width, int height, const std::string& title);
 
 	/**
-	 * @brief Destructor. Libera recursos asociados a la ventana.
+	 * @brief Destructor to clean up resources.
 	 */
 	~Window();
 
 	/**
-	 * @brief Procesa los eventos de la ventana (cerrar, teclado, etc.).
+	 * @brief Processes window events such as input or close requests.
+	 *
+	 * This function should be called every frame to ensure window responsiveness.
 	 */
-	void handleEvents();
+	void
+		handleEvents();
 
 	/**
-	 * @brief Verifica si la ventana aún está abierta.
-	 * @return true si la ventana está abierta, false si fue cerrada.
+	 * @brief Checks if the window is currently open.
+	 * @return True if the window is open, false otherwise.
 	 */
-	bool isOpen() const;
+	bool
+		isOpen() const;
 
 	/**
-	 * @brief Limpia la ventana con un color específico.
-	 * @param color Color de fondo (por defecto negro opaco).
+	 * @brief Clears the window with the specified color.
+	 * @param color The color to clear the window with (default is opaque black).
 	 */
-	void clear(const sf::Color& color = sf::Color(0, 0, 0, 255));
+	void
+		clear(const sf::Color& color = sf::Color(0, 0, 0, 255));
 
 	/**
-	 * @brief Dibuja un objeto SFML en la ventana.
-	 * @param drawable Referencia al objeto dibujable (shape, sprite, texto, etc.).
-	 * @param states Estados de renderizado opcionales (por defecto estado estándar).
+	 * @brief Draws a drawable object to the window.
+	 * @param drawable The drawable object to render.
+	 * @param states Render states to apply (default is sf::RenderStates::Default).
 	 */
-	void draw(const sf::Drawable& drawable,
-		const sf::RenderStates& states = sf::RenderStates::Default);
+	void
+		draw(const sf::Drawable& drawable,
+			const sf::RenderStates& states = sf::RenderStates::Default);
 
 	/**
-	 * @brief Muestra el contenido actual en la ventana.
+	 * @brief Displays the rendered frame on the screen.
+	 *
+	 * This should be called after all draw calls to present the final image.
 	 */
-	void display();
+	void
+		display();
+
+	void
+		update();
 
 	/**
-	 * @brief Destruye la ventana y libera sus recursos.
+	 * @brief Destroys the window and releases resources.
+	 *
+	 * Safe to call manually or will be called in the destructor.
 	 */
-	void destroy();
+	void
+		destroy();
 
 private:
-	EngineUtilities::TUniquePtr<sf::RenderWindow> m_windowPtr; ///< Puntero único a la ventana SFML.
-	sf::View m_view; ///< Vista de la cámara utilizada para renderizar.
+	EngineUtilities::TUniquePtr
+		<sf::RenderWindow> m_windowPtr; ///< Unique pointer to the SFML RenderWindow.
+
+	sf::View
+		m_view; ///< Current view used for rendering.
+public:
+	sf::Time deltaTime; ///< Time elapsed since the last frame.
+	sf::Clock
+		m_clock; ///< Clock to measure time between frames.
 };

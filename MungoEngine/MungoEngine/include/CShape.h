@@ -1,35 +1,30 @@
-/**
- * @file CShape.h
- * @brief Define la clase CShape, un componente derivado que representa una figura gráfica en pantalla.
- * @author Hannin Abarca
- */
-
-#pragma once
+ï»¿#pragma once
 #include "Prerequisites.h"
-#include "./ESC/Component.h"
+#include <./ESC/Component.h>
 
- /**
-  * @brief Declaración adelantada de la clase Window.
-  */
 class
 	Window;
 
 /**
  * @class CShape
- * @brief Componente derivado que representa una figura gráfica SFML.
+ * @brief Derived component representing a graphical shape.
+ *
+ * This component encapsulates a drawable SFML shape, providing methods to
+ * create, position, transform, and render it. It supports different shape types
+ * defined by the ShapeType enum.
  */
 class
 	CShape : public Component {
 
 public:
 	/**
-	 * @brief Constructor por defecto.
+	 * @brief Default constructor.
 	 */
 	CShape() = default;
 
 	/**
-	 * @brief Constructor con inicialización del tipo de figura.
-	 * @param shapeType Tipo de figura a crear.
+	 * @brief Constructor with shape type initialization.
+	 * @param shapeType Type of the shape to create.
 	 */
 	CShape(ShapeType shapeType) :
 		m_shapePtr(nullptr),
@@ -44,77 +39,85 @@ public:
 		~CShape() = default;
 
 	/**
-	 * @brief Crea la figura según el tipo especificado.
-	 * @param shapeType Valor del enumerador que indica el tipo de figura.
+	 * @brief Creates the shape of the specified type.
+	 * @param shapeType Shape type enum value.
 	 */
 	void
 		createShape(ShapeType shapeType);
 
 	/**
-	 * @brief Método del ciclo de vida que se ejecuta al inicio.
+	 * @brief Component lifecycle start method.
+	 *
+	 * Called when the component is initialized in the system.
 	 */
 	void
 		start() override;
 
 	/**
-	 * @brief Actualiza el estado de la figura.
-	 * @param deltaTime Tiempo transcurrido desde el último frame.
+	 * @brief Updates the shape state.
+	 * @param deltaTime Time elapsed since last update.
+	 *
+	 * Can be used to animate or adjust the shape's properties dynamically.
 	 */
 	void
 		update(float deltaTime) override;
 
 	/**
-	 * @brief Dibuja la figura en la ventana proporcionada.
-	 * @param window Puntero compartido a la ventana destino.
+	 * @brief Renders the shape to the provided window.
+	 * @param window Shared pointer to the target window.
 	 */
 	void
 		render(const EngineUtilities::TSharedPointer<Window>& window) override;
 
 	/**
-	 * @brief Libera recursos asociados a la figura.
+	 * @brief Cleans up resources.
 	 */
 	void
 		destroy() override;
 
 	/**
-	 * @brief Establece la posición de la figura.
-	 * @param x Coordenada X.
-	 * @param y Coordenada Y.
+	 * @brief Sets the position of the shape.
+	 * @param x X coordinate.
+	 * @param y Y coordinate.
 	 */
 	void
 		setPosition(float x, float y);
 
 	/**
-	 * @brief Establece la posición de la figura usando un vector.
-	 * @param position Vector 2D con la nueva posición.
+	 * @brief Sets the position of the shape using a vector.
+	 * @param position 2D position vector.
 	 */
 	void
 		setPosition(const sf::Vector2f& position);
 
 	/**
-	 * @brief Establece el color de relleno de la figura.
-	 * @param color Color de tipo SFML.
+	 * @brief Sets the fill color of the shape.
+	 * @param color SFML color object.
 	 */
 	void
 		setFillColor(const sf::Color& color);
 
 	/**
-	 * @brief Establece el ángulo de rotación de la figura.
-	 * @param angle Ángulo de rotación en grados.
+	 * @brief Sets the rotation angle of the shape in degrees.
+	 * @param angle Rotation angle.
 	 */
 	void
 		setRotation(float angle);
 
 	/**
-	 * @brief Establece la escala de la figura.
-	 * @param scl Vector 2D de escala.
+	 * @brief Sets the scale of the shape.
+	 * @param scl 2D scale vector.
 	 */
 	void
 		setScale(const sf::Vector2f& scl);
 
 private:
 	EngineUtilities::TSharedPointer<sf::Shape>
-		m_shapePtr; ///< Puntero compartido a la instancia de forma SFML.
-	ShapeType m_shapeType; ///< Enum que representa el tipo actual de la figura.
-	sf::VertexArray* m_line; ///< Puntero para renderizado de líneas (opcional).
+		m_shapePtr; ///< Shared pointer to the SFML shape instance.
+
+	ShapeType
+		m_shapeType; ///< Enum representing the current shape type.
+
+	sf::VertexArray*
+		m_line; ///< Pointer for line rendering (optional).
 };

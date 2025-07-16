@@ -1,74 +1,99 @@
-/**
- * @file Prerequisites.h
- * @brief Archivo de cabecera con utilidades, macros y tipos base comunes para todo el motor.
- * @author Hannin Abarca
- */
-
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <thread>
-#include <map>
-#include <fstream>
-#include <unordered_map>
+// ========================
+// Standard Libraries
+// ========================
+#include <iostream>      ///< For standard input/output streams.
+#include <string>        ///< For string manipulation.
+#include <sstream>       ///< For string stream formatting.
+#include <vector>        ///< For dynamic array container.
+#include <thread>        ///< For multithreading support.
+#include <map>           ///< For ordered key-value container.
+#include <fstream>       ///< For file input/output operations.
+#include <unordered_map> ///< For hash map container.
 
-#include <SFML/Graphics.hpp>
-#include "Memory/TSharedPointer.h"
-#include "Memory/TWeakPointer.h"
-#include "Memory/TStaticPtr.h"
-#include "Memory/TUniquePtr.h"
+// ========================
+// Third Party Libraries
+// ========================
+#include <SFML/Graphics.hpp> 
+///< Simple and Fast Multimedia Library for rendering 2D graphics.
+
+#include "Memory/TSharedPointer.h"  ///< Custom shared pointer implementation.
+#include "Memory/TWeakPointer.h"    ///< Custom weak pointer implementation.
+#include "Memory/TStaticPtr.h"      ///< Custom static pointer implementation.
+#include "Memory/TUniquePtr.h"      ///< Custom unique pointer implementation.
+
+// ========================
+// Macros
+// ========================
+
+/**
+ * @brief Safely releases a pointer and sets it to nullptr.
+ *
+ * Example usage:
+ * @code
+ * SAFE_PTR_RELEASE(myPointer);
+ * @endcode
+ */
+#define SAFE_PTR_RELEASE(x) \
+	if (x != nullptr) { delete x; x = nullptr; }
 
  /**
-  * @def SAFE_PTR_RELEASE(x)
-  * @brief Libera un puntero y lo asigna a nullptr de forma segura.
-  */
-#define SAFE_PTR_RELEASE(x) if(x != nullptr) { delete x; x = nullptr; }
-
-  /**
-   * @def MESSAGE(classObj, method, state)
-   * @brief Macro para imprimir un mensaje de creación de recurso al flujo de error estándar.
-   *
-   * @param classObj Nombre de la clase.
-   * @param method Nombre del método.
-   * @param state Estado del recurso creado.
-   */
-#define MESSAGE(classObj, method, state)                      \
-{                                                             \
-    std::ostringstream os_;                                   \
-    os_ << classObj << "::" << method << " : "                \
-        << "[CREATION OF RESOURCE" << ": " << state << "] \n";\
-    std::cerr << os_.str();                                   \
+	* @brief Outputs a formatted message indicating the state of a
+	* resource creation.
+	*
+	* @param classObj The name of the class.
+	* @param method The method where the message is generated.
+	* @param state The current state or detail of the resource creation.
+	*
+	* Example usage:
+	* @code
+	* MESSAGE("MyClass", "initialize", "Success");
+	* @endcode
+	*/
+#define MESSAGE(classObj, method, state)                        \
+{                                                               \
+	std::ostringstream os_;                                     \
+	os_ << classObj << "::" << method << " : "                  \
+		<< "[CREATION OF RESOURCE" << ": " << state << "] \n";  \
+	std::cerr << os_.str();                                     \
 }
 
-   /**
-    * @def ERROR(classObj, method, errorMSG)
-    * @brief Macro para imprimir un mensaje de error y terminar la ejecución.
-    *
-    * @param classObj Nombre de la clase donde ocurrió el error.
-    * @param method Nombre del método donde ocurrió el error.
-    * @param errorMSG Mensaje de error detallado.
-    */
-#define ERROR(classObj, method, errorMSG)                         \
-{                                                                 \
-    std::ostringstream os_;                                       \
-    os_ << "ERROR : " << classObj << "::" << method << " : "      \
-        << "  Error in data from params [" << errorMSG << "] \n"; \
-    std::cerr << os_.str();                                       \
-    exit(1);                                                      \
+	/**
+	 * @brief Outputs a formatted error message and exits the application.
+	 *
+	 * @param classObj The name of the class.
+	 * @param method The method where the error occurred.
+	 * @param errorMSG A description of the error.
+	 *
+	 * Example usage:
+	 * @code
+	 * ERROR("MyClass", "loadFile", "File not found");
+	 * @endcode
+	 */
+#define ERROR(classObj, method, errorMSG)                          \
+{                                                                  \
+	std::ostringstream os_;                                        \
+	os_ << "ERROR : " << classObj << "::" << method << " : "       \
+		<< "  Error in data from params [" << errorMSG << "] \n";  \
+	std::cerr << os_.str();                                        \
+	exit(1);                                                       \
 }
 
-    /**
-     * @enum ShapeType
-     * @brief Define los tipos de figuras geométricas soportadas por el sistema.
-     */
+	 // ========================
+	 // Enums
+	 // ========================
+
+	 /**
+		* @enum ShapeType
+		* @brief Defines the possible shape types that can be
+		* rendered or created in the system.
+		*/
 enum
-    ShapeType {
-    EMPTY = 0,     /**< Sin tipo asignado. */
-    CIRCLE = 1,    /**< Círculo. */
-    RECTANGLE = 2, /**< Rectángulo. */
-    TRIANGLE = 3,  /**< Triángulo. */
-    POLYGON = 4    /**< Polígono de múltiples lados. */
+	ShapeType {
+	EMPTY = 0,     ///< No shape defined.
+	CIRCLE = 1,    ///< Circle shape.
+	RECTANGLE = 2, ///< Rectangle shape.
+	TRIANGLE = 3,  ///< Triangle shape.
+	POLYGON = 4    ///< Custom polygon shape.
 };

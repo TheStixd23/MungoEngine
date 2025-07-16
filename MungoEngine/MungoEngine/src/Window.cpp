@@ -1,17 +1,5 @@
-/**
- * @file Window.cpp
- * @brief Implementación de la clase Window, responsable de la creación y gestión de una ventana SFML para renderizado gráfico.
- * @author Hannin Abarca
- */
-
 #include "window.h"
 
- /**
-  * @brief Constructor que crea una ventana SFML con las dimensiones y título especificados.
-  * @param width Ancho de la ventana en píxeles.
-  * @param height Alto de la ventana en píxeles.
-  * @param title Título de la ventana.
-  */
 Window::Window(int width, int height, const std::string& title) {
 
 	m_windowPtr = EngineUtilities
@@ -26,16 +14,10 @@ Window::Window(int width, int height, const std::string& title) {
 	}
 }
 
-/**
- * @brief Destructor de la ventana. Libera el recurso si aún existe.
- */
 Window::~Window() {
 	m_windowPtr.release();
 }
 
-/**
- * @brief Procesa los eventos del sistema, como el cierre de la ventana.
- */
 void
 Window::handleEvents() {
 	sf::Event event;
@@ -46,10 +28,6 @@ Window::handleEvents() {
 	}
 }
 
-/**
- * @brief Verifica si la ventana está abierta.
- * @return true si la ventana sigue activa, false si fue cerrada o no existe.
- */
 bool
 Window::isOpen() const {
 	if (!m_windowPtr.isNull()) {
@@ -61,10 +39,6 @@ Window::isOpen() const {
 	}
 }
 
-/**
- * @brief Limpia la ventana con el color especificado.
- * @param color Color con el que se limpia la ventana.
- */
 void
 Window::clear(const sf::Color& color) {
 	if (!m_windowPtr.isNull()) {
@@ -75,11 +49,6 @@ Window::clear(const sf::Color& color) {
 	}
 }
 
-/**
- * @brief Dibuja un objeto sobre la ventana.
- * @param drawable Objeto SFML que se desea dibujar.
- * @param states Estados de renderizado opcionales.
- */
 void
 Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states) {
 	if (!m_windowPtr.isNull()) {
@@ -90,9 +59,6 @@ Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states) {
 	}
 }
 
-/**
- * @brief Muestra en pantalla el contenido actual del búfer de dibujo.
- */
 void
 Window::display() {
 	if (!m_windowPtr.isNull()) {
@@ -103,9 +69,11 @@ Window::display() {
 	}
 }
 
-/**
- * @brief Libera manualmente el recurso de la ventana.
- */
+void
+Window::update() {
+	deltaTime = m_clock.restart();
+}
+
 void
 Window::destroy() {
 	m_windowPtr.release();

@@ -1,102 +1,121 @@
-/**
- * @file Entity.h
- * @brief Define la clase base abstracta Entity que representa un objeto en la escena con componentes. 
- * @author Hannin Abarca
- */
 
 #pragma once
+
 #include "../Prerequisites.h"
 #include "Component.h"
 
-/**
- * @brief Declaración adelantada de la clase Window.
- */
 class
 	Window;
 
 /**
  * @class Entity
- * @brief Clase abstracta que representa una entidad del sistema.
- * 
- * Las entidades pueden tener múltiples componentes y deben implementar los métodos de ciclo de vida.
+ * @brief Abstract base class representing an entity in the engine.
+ *
+ * Entities are core objects in the engine which can hold multiple components.
+ * Each entity supports a standard lifecycle (start, update, render, destroy),
+ * and provides methods to manage components.
  */
 class
 	Entity {
 public:
-
 	/**
-	 * @brief Destructor virtual.
+	 * @brief Virtual default destructor.
 	 */
 	virtual
 		~Entity() = default;
 
 	/**
-	 * @brief Método abstracto llamado al iniciar la entidad.
+	 * @brief Called when the entity is initialized.
+	 *
+	 * This method is meant to be overridden to define startup logic
+	 * such as component initialization.
 	 */
 	virtual void
 		start() = 0;
 
 	/**
-	 * @brief Método abstracto que actualiza la entidad cada frame.
-	 * @param deltaTime Tiempo transcurrido desde el último frame.
+	 * @brief Called every frame to update the entity.
+	 * @param deltaTime Time elapsed since the last frame (in seconds).
+	 *
+	 * Override this to define per-frame behavior.
 	 */
 	virtual void
 		update(float deltaTime) = 0;
 
 	/**
-	 * @brief Método abstracto que renderiza la entidad.
-	 * @param window Puntero a la ventana donde se dibuja la entidad.
+	 * @brief Called to render the entity.
+	 * @param window Shared pointer to the render window.
+	 *
+	 * Override this to define how the entity should be drawn.
 	 */
 	virtual void
 		render(const EngineUtilities::TSharedPointer<Window>& window) = 0;
 
 	/**
-	 * @brief Método abstracto que destruye la entidad y libera sus recursos.
+	 * @brief Called before the entity is destroyed to release resources.
+	 *
+	 * Use this to clean up any allocated resources or detach components.
 	 */
 	virtual void
 		destroy() = 0;
 
 	/**
-	 * @brief Agrega un componente a la entidad.
-	 * 
-	 * @tparam T Tipo de componente que hereda de Component.
-	 * @param component Puntero compartido al componente que se va a agregar.
+	 * @brief Adds a component of type T to the entity.
+	 *
+	 * The component must inherit from the base Component class.
+	 * Internally, it's cast to the base type to be stored in the component list.
+	 *
+	 * @tparam T The type of the component (must derive from Component).
+	 * @param component Shared pointer to the component instance.
 	 */
-	template<typename T> void
+	template<typename T>
+	void
 		addComponent(EngineUtilities::TSharedPointer<T> component) {
-		static_assert(std::is_base_of<Component, T>
-			::value, "T must be derived from Component");
-		components.push_back
-		(component.template dynamic_pointer_cast<Component>());
+		static_assert
+			(std::is_base_of<Component, T>::value, "T must be derived from Component");
+
+		// Cast component to base type and add to internal list
+		components.push_back(component.template dynamic_pointer_cast<Component>());
 	}
 
 	/**
-	 * @brief Obtiene el primer componente del tipo solicitado.
-	 * 
-	 * @tparam T Tipo del componente buscado.
-	 * @return Puntero compartido al componente si se encuentra, o nulo si no existe.
+	 * @brief Retrieves the first component of type T attached to the entity.
+	 *
+	 * Iterates through the list of components and attempts to cast each one
+	 * to the requested type. Returns the first successful match.
+	 *
+	 * @tparam T The type of component to retrieve.
+	 * @return Shared pointer to the component if found; empty pointer otherwise.
 	 */
 	template<typename T>
-	EngineUtilities::TSharedPointer<T>
-		getComponent() {
+	EngineUtilities::TSharedPointer<T> getComponent() {
 		for (auto& component : components) {
-			EngineUtilities::TSharedPointer<T> specificComponent
-				= component.template dynamic_pointer_cast<T>();
+			// Attempt dynamic cast from base component to specific type T
+			EngineUtilities::TSharedPointer<T> specificComponent =
+				component.template dynamic_pointer_cast<T>();
+
 			if (specificComponent) {
 				return specificComponent;
 			}
 		}
 
+		// No matching component found
 		return EngineUtilities::TSharedPointer<T>();
 	}
 
 protected:
-	/** @brief Indica si la entidad está activa. */
-	bool isActive;
+	/**
+	 * @brief Flag indicating whether the entity is currently active.
+	 */
+	bool isActive = true;
 
-	/** @brief Identificador único de la entidad. */
-	uint32_t id;
+	/**
+	 * @brief Unique identifier assigned to the entity.
+	 */
+	uint32_t id = 0;
 
-	/** @brief Lista de componentes asociados a la entidad. */
+	/**
+	 * @brief List of components attached to this entity.
+	 */
 	std::vector<EngineUtilities::TSharedPointer<Component>> components;
 };

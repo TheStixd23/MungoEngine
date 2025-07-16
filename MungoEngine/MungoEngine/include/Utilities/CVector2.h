@@ -1,95 +1,70 @@
-/**
- * @file CVector2.h
- * @brief Define la estructura de vector 2D con operaciones básicas de álgebra vectorial para motores gráficos y simulaciones.
- * @author Hannin Abarca
- */
-
 #pragma once
 #include "../Prerequisites.h"
 #include <iostream>
-
- /**
-  * @class CVector2
-  * @brief Representa un vector bidimensional con operaciones matemáticas comunes.
-  */
-class CVector2 {
-public:
-    float x, y; ///< Componentes X e Y del vector.
-
-    /**
-     * @brief Constructor por defecto, inicializa a (0, 0).
-     */
-    CVector2() { x = 0;  y = 0; }
-
-    /**
-     * @brief Constructor con componentes personalizadas.
-     * @param X Componente X.
-     * @param Y Componente Y.
-     */
-    CVector2(float X, float Y) { x = X;  y = Y; }
-
-    /// @name Operadores aritméticos
-    /// @{
-
-    CVector2 operator+(const CVector2& o) const;
-    CVector2 operator-(const CVector2& o) const;
-    CVector2 operator*(float s) const;
-    CVector2 operator/(float s) const;
-    CVector2 operator-() const;
-
-    CVector2& operator+=(const CVector2& o);
-    CVector2& operator-=(const CVector2& o);
-    CVector2& operator*=(float s);
-    CVector2& operator/=(float s);
-
-    /// @}
-
-    /// @name Operadores de comparación
-    /// @{
-
-    bool operator==(const CVector2& o) const;
-    bool operator!=(const CVector2& o) const;
-
-    /// @}
-
-    /// @name Magnitudes y normalización
-    /// @{
-
-    float lengthSq() const;       ///< Retorna la magnitud al cuadrado del vector.
-    float length() const;         ///< Retorna la magnitud (longitud) del vector.
-    CVector2 normalized() const;  ///< Retorna una copia normalizada del vector.
-    void normalize();             ///< Normaliza el vector actual in-place.
-
-    /// @}
-
-    /// @name Producto escalar y cruzado
-    /// @{
-
-    float dot(const CVector2& o) const;    ///< Producto punto.
-    float cross(const CVector2& o) const;  ///< Producto cruzado (en 2D, da un escalar).
-
-    /// @}
-
-    /// @name Utilidades estáticas
-    /// @{
-
-    static CVector2 zero();                          ///< Vector (0, 0).
-    static CVector2 one();                           ///< Vector (1, 1).
-    static float distance(const CVector2& a, const CVector2& b); ///< Distancia entre dos vectores.
-    static CVector2 lerp(const CVector2& a, const CVector2& b, float t); ///< Interpolación lineal.
-
-    /// @}
-};
-
-// === Implementación de operadores en línea ===
+#include <cmath>
 
 /**
- * @brief Operador de inserción para imprimir el vector.
- * @param os Flujo de salida.
- * @param v Vector a imprimir.
- * @return Flujo modificado.
+ * @class CVector2
+ * @brief Representa un vector bidimensional con operaciones matemáticas comunes.
  */
-inline std::ostream& operator<<(std::ostream& os, const CVector2& v)
-{
+class CVector2 {
+public:
+    float x, y;
+
+    CVector2() : x(0), y(0) {}
+    CVector2(float X, float Y) : x(X), y(Y) {}
+
+    // Operadores aritméticos
+    CVector2 operator+(const CVector2& o) const { return CVector2(x + o.x, y + o.y); }
+    CVector2 operator-(const CVector2& o) const { return CVector2(x - o.x, y - o.y); }
+    CVector2 operator*(float s) const { return CVector2(x * s, y * s); }
+    CVector2 operator/(float s) const { return CVector2(x / s, y / s); }
+    CVector2 operator-() const { return CVector2(-x, -y); }
+
+    CVector2& operator+=(const CVector2& o) { x += o.x; y += o.y; return *this; }
+    CVector2& operator-=(const CVector2& o) { x -= o.x; y -= o.y; return *this; }
+    CVector2& operator*=(float s) { x *= s; y *= s; return *this; }
+    CVector2& operator/=(float s) { x /= s; y /= s; return *this; }
+
+    // Comparación
+    bool operator==(const CVector2& o) const { return x == o.x && y == o.y; }
+    bool operator!=(const CVector2& o) const { return !(*this == o); }
+
+    // Magnitud y normalización
+    float lengthSq() const { return x * x + y * y; }
+    float length() const { return std::sqrt(lengthSq()); }
+
+    CVector2 normalized() const {
+        float len = length();
+        return len != 0 ? CVector2(x / len, y / len) : CVector2(0, 0);
+    }
+
+    void normalize() {
+        float len = length();
+        if (len != 0) {
+            x /= len;
+            y /= len;
+        }
+    }
+
+    // Producto punto y cruzado
+    float dot(const CVector2& o) const { return x * o.x + y * o.y; }
+    float cross(const CVector2& o) const { return x * o.y - y * o.x; }
+
+    // Utilidades estáticas
+    static CVector2 zero() { return CVector2(0, 0); }
+    static CVector2 one() { return CVector2(1, 1); }
+
+    static float distance(const CVector2& a, const CVector2& b) {
+        return (a - b).length();
+    }
+
+    static CVector2 lerp(const CVector2& a, const CVector2& b, float t) {
+        return a + (b - a) * t;
+    }
+};
+
+// Impresión por consola
+inline std::ostream& operator<<(std::ostream& os, const CVector2& v) {
     return os << "(" << v.x << ", " << v.y << ")";
 }
