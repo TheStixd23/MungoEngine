@@ -52,3 +52,7 @@ void
 Actor::destroy() {
 
 }
+
+void Actor::setTexture(const EngineUtilities::TSharedPointer<Texture>& texture)
+{
+}

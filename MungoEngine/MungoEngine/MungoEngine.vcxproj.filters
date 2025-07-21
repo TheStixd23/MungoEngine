@@ -80,5 +80,8 @@
     <ClInclude Include="include\ESC\Transform.h">
       <Filter>ECS</Filter>
     </ClInclude>
+    <ClInclude Include="include\ESC\Texture.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

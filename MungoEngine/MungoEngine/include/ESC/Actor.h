@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Cshape.h"
 #include "./Transform.h"
+#include "Texture.h"
 
 /**
  * @class Actor
@@ -71,6 +72,9 @@ public:
 	 */
 	void
 		destroy() override;
+
+	void setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
+
 
 	/**
 	 * @brief Retrieves the first component of type T attached to the actor.
