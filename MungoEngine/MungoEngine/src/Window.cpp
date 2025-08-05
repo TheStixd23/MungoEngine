@@ -1,9 +1,15 @@
 #include "window.h"
+#include "EngineGUI.h"
+
 
 Window::Window(int width, int height, const std::string& title) {
 
-	m_windowPtr = EngineUtilities
-		::MakeUnique<sf::RenderWindow>(sf::VideoMode(width, height), title);
+	m_windowPtr = EngineUtilities::MakeUnique<sf::RenderWindow>(
+		sf::VideoMode({ static_cast<unsigned int>(width),
+										static_cast<unsigned int>(height) }),
+		title,
+		sf::Style::Default
+	);
 
 	if (!m_windowPtr.isNull()) {
 		m_windowPtr->setFramerateLimit(60);
@@ -19,12 +25,15 @@ Window::~Window() {
 }
 
 void
-Window::handleEvents() {
-	sf::Event event;
-	while (m_windowPtr->pollEvent(event)) {
-		if (event.type == sf::Event::Closed) {
+Window::handleEvents(EngineGUI& engineGUI) {
+
+	while (const std::optional event = m_windowPtr->pollEvent())
+	{
+
+		engineGUI.processEvent(*m_windowPtr, *event);
+		// Close window: exit
+		if (event->is<sf::Event::Closed>())
 			m_windowPtr->close();
-		}
 	}
 }
 
@@ -72,6 +81,10 @@ Window::display() {
 void
 Window::update() {
 	deltaTime = m_clock.restart();
+}
+
+void
+Window::render() {
 }
 
 void

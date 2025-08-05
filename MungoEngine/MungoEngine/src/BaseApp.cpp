@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+
 BaseApp::~BaseApp() {}
 
 int BaseApp::run() {
@@ -13,7 +14,7 @@ int BaseApp::run() {
 	}
 
 	while (m_windowPtr->isOpen()) {
-		m_windowPtr->handleEvents();
+		m_windowPtr->handleEvents(m_engineGUI);
 		update();
 		render();
 	}
@@ -31,6 +32,9 @@ bool BaseApp::init() {
 		return false;
 	}
 
+	m_engineGUI.init(m_windowPtr);
+
+	// Crear Actor círculo
 	m_ACircle = EngineUtilities::MakeShared<Actor>("Circle Actor");
 	if (m_ACircle) {
 		m_ACircle->getComponent<CShape>()->createShape(CIRCLE);
@@ -39,11 +43,12 @@ bool BaseApp::init() {
 		m_ACircle->getComponent<Transform>()->setScale(sf::Vector2f(2.f, 2.f));
 
 		if (!resourceMan.loadTexture("sprites/mushroom", "png")) {
-			MESSAGE("BaseApp", "Init", "cant load the texture")
+			MESSAGE("BaseApp", "Init", "cant load the texture");
 		}
 		m_ACircle->setTexture(resourceMan.getTexture("sprites/mushroom"));
 	}
 
+	// Definir Waypoints
 	m_waypoints.clear();
 	m_waypoints.push_back(sf::Vector2f(1320.f, 855.f));
 	m_waypoints.push_back(sf::Vector2f(1320.f, 600.f));
@@ -54,6 +59,7 @@ bool BaseApp::init() {
 	m_waypoints.push_back(sf::Vector2f(750.f, 850.f));
 	m_waypoints.push_back(sf::Vector2f(950.f, 950.f));
 	m_waypoints.push_back(sf::Vector2f(1320.f, 855.f));
+
 	m_currentWaypointIndex = 0;
 
 	m_ATrack = EngineUtilities::MakeShared<Actor>("Track Actor");
@@ -76,22 +82,30 @@ void BaseApp::update() {
 	if (!m_windowPtr.isNull()) {
 		m_windowPtr->update();
 	}
+	m_engineGUI.update(m_windowPtr, m_windowPtr->deltaTime);
+
+	ImGui::ShowDemoWindow();
 
 	if (!m_ACircle.isNull()) {
 		m_ACircle->update(m_windowPtr->deltaTime.asSeconds());
 
 		if (m_currentWaypointIndex < m_waypoints.size()) {
 			sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex];
-			float distanceToTarget = std::sqrt(
-				std::pow(targetPos.x - m_ACircle->getComponent<Transform>()->getPosition().x, 2) +
-				std::pow(targetPos.y - m_ACircle->getComponent<Transform>()->getPosition().y, 2)
+			sf::Vector2f currentPos = m_ACircle->getComponent<Transform>()->getPosition();
+
+			// Distancia al waypoint usando <cmath>
+			double distanceToTarget = std::sqrt(
+				std::pow(targetPos.x - currentPos.x, 2) +
+				std::pow(targetPos.y - currentPos.y, 2)
 			);
 
 			if (distanceToTarget < 10.0f) {
 				m_currentWaypointIndex++;
 			}
 			else {
-				m_ACircle->getComponent<Transform>()->seek(targetPos, 100.f, m_windowPtr->deltaTime.asSeconds(), 10.f);
+				m_ACircle->getComponent<Transform>()->seek(
+					targetPos, 100.f, m_windowPtr->deltaTime.asSeconds(), 10.f
+				);
 			}
 		}
 	}
@@ -118,7 +132,11 @@ void BaseApp::render() {
 		m_ACircle->getComponent<CShape>()->render(m_windowPtr);
 	}
 
+	m_windowPtr->render();
+	m_engineGUI.render(m_windowPtr);
 	m_windowPtr->display();
 }
 
-void BaseApp::destroy() {}
+void BaseApp::destroy() {
+	m_engineGUI.destroy();
+}

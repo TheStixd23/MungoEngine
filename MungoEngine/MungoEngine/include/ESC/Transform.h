@@ -5,47 +5,89 @@
 #include "Window.h"
 #include <cmath>
 
+
 class Window;
 
+/**
+ * @class Transform
+ * @brief Component managing position, rotation, and scale of an entity.
+ *
+ * This component handles the spatial transformation of an entity,
+ * including position, rotation, and scale in 2D space.
+ */
 class Transform : public Component {
+
 public:
-    Transform()
-        : m_position(0.f, 0.f),
-        m_rotation(0.f, 0.f),
-        m_scale(1.f, 1.f),
-        Component(ComponentType::TRANSFORM) {
-    }
+	/**
+	 * @brief Default constructor initializes position (0,0),
+	 * rotation (0,0), and scale (1,1).
+	 */
+	Transform() :
+		m_position(0.f, 0.f),
+		m_rotation(0.f, 0.f),
+		m_scale(1.f, 1.f),
+		Component(ComponentType::TRANSFORM) {
+	}
 
-    virtual ~Transform() = default;
+	/**
+	 * @brief Virtual destructor.
+	 */
+	virtual ~Transform() = default;
 
-    void start() override {}
-    void update(float deltaTime) override {}
-    void render(const EngineUtilities::TSharedPointer<Window>& window) override {}
-    void destroy() override {}
+	/**
+	 * @brief Called once when the component starts.
+	 */
+	void start() override {};
 
-    void seek(const sf::Vector2f& targetPosition, float speed, float deltaTime, float range) {
-        sf::Vector2f direction = targetPosition - m_position;
-        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+	/**
+	 * @brief Called every frame to update the component.
+	 * @param deltaTime Time elapsed since last frame in seconds.
+	 */
+	void update(float deltaTime) override {};
 
-        if (length > range) {
-            direction /= length;
-            m_position += direction * speed * deltaTime;
+	/**
+	 * @brief Called to render the component.
+	 * @param window Shared pointer to the rendering window.
+	 */
+	void render(const EngineUtilities::TSharedPointer<Window>& window) override {};
 
-            float angle = std::atan2(direction.y, direction.x) * 180.f / 3.14159f;
-            m_rotation.x = angle;
-        }
-    }
+	/**
+	 * @brief Called when the component is destroyed for cleanup.
+	 */
+	void destroy() {}
 
-    void setPosition(const sf::Vector2f& _position) { m_position = _position; }
-    void setRotation(const sf::Vector2f& _rotation) { m_rotation = _rotation; }
-    void setScale(const sf::Vector2f& _scale) { m_scale = _scale; }
+	/**
+	 * @brief Moves the entity toward a target position with speed and range control.
+	 * @param targetPosition Destination position.
+	 * @param speed Movement speed.
+	 * @param deltaTime Frame time.
+	 * @param range Threshold distance to stop moving.
+	 */
+	void seek(const sf::Vector2f& targetPosition,
+		float speed,
+		float deltaTime,
+		float range) {
+		sf::Vector2f direction = targetPosition - m_position;
+		float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-    sf::Vector2f& getPosition() { return m_position; }
-    sf::Vector2f& getRotation() { return m_rotation; }
-    sf::Vector2f& getScale() { return m_scale; }
+		if (length > range) {
+			direction /= length; // Normaliza el vector
+			m_position += direction * speed * deltaTime;
+		}
+	}
+
+	// Setters
+	void setPosition(const sf::Vector2f& _position) { m_position = _position; }
+	void setRotation(const sf::Vector2f& _rotation) { m_rotation = _rotation; }
+	void setScale(const sf::Vector2f& _scale) { m_scale = _scale; }
+
+	// Getters
+	sf::Vector2f& getPosition() { return m_position; }
+	sf::Vector2f& getRotation() { return m_rotation; }
+	sf::Vector2f& getScale() { return m_scale; }
 
 private:
-    sf::Vector2f m_position;
-    sf::Vector2f m_rotation;
-    sf::Vector2f m_scale;
+	sf::Vector2f m_position; //< Position vector
+	sf::Vector2f m_rotation; //< Rotation vector
+	sf::Vector2f m_scale;    //< Scale vector
 };
