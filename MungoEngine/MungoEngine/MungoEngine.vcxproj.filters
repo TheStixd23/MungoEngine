@@ -65,6 +65,9 @@
     <ClCompile Include="..\ThirdParties\imgui-sfml-master\imgui-SFML.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="include\ESC\A_Racer.cpp">
+      <Filter>Source Files\ECS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Prerequisites.h">
@@ -141,6 +144,9 @@
     </ClInclude>
     <ClInclude Include="..\ThirdParties\imgui-sfml-master\imgui-SFML_export.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ESC\A_Racer.h">
+      <Filter>ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,13 +4,13 @@
 #include "ResourceManager.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
-
+#include "../include/BaseApp.h"
 
 BaseApp::~BaseApp() {}
 
 int BaseApp::run() {
 	if (!init()) {
-		ERROR("BaseApp", "run", "Initializes result on a false statemente, check method validations");
+		ERROR("BaseApp", "run", "Initializes result on a false statement, check method validations");
 	}
 
 	while (m_windowPtr->isOpen()) {
@@ -34,7 +34,6 @@ bool BaseApp::init() {
 
 	m_engineGUI.init(m_windowPtr);
 
-	// Crear Actor círculo
 	m_ACircle = EngineUtilities::MakeShared<Actor>("Circle Actor");
 	if (m_ACircle) {
 		m_ACircle->getComponent<CShape>()->createShape(CIRCLE);
@@ -48,20 +47,6 @@ bool BaseApp::init() {
 		m_ACircle->setTexture(resourceMan.getTexture("sprites/mushroom"));
 	}
 
-	// Definir Waypoints
-	m_waypoints.clear();
-	m_waypoints.push_back(sf::Vector2f(1320.f, 855.f));
-	m_waypoints.push_back(sf::Vector2f(1320.f, 600.f));
-	m_waypoints.push_back(sf::Vector2f(1100.f, 400.f));
-	m_waypoints.push_back(sf::Vector2f(750.f, 350.f));
-	m_waypoints.push_back(sf::Vector2f(600.f, 470.f));
-	m_waypoints.push_back(sf::Vector2f(550.f, 700.f));
-	m_waypoints.push_back(sf::Vector2f(750.f, 850.f));
-	m_waypoints.push_back(sf::Vector2f(950.f, 950.f));
-	m_waypoints.push_back(sf::Vector2f(1320.f, 855.f));
-
-	m_currentWaypointIndex = 0;
-
 	m_ATrack = EngineUtilities::MakeShared<Actor>("Track Actor");
 	if (m_ATrack) {
 		m_ATrack->getComponent<CShape>()->createShape(RECTANGLE);
@@ -74,6 +59,35 @@ bool BaseApp::init() {
 		}
 		m_ATrack->setTexture(resourceMan.getTexture("sprites/Track"));
 	}
+
+	m_racerNPC = EngineUtilities::MakeShared<A_Racer>("NPC_1");
+	if (m_racerNPC) {
+		m_racerNPC->getComponent<CShape>()->createShape(CIRCLE);
+		m_racerNPC->getComponent<CShape>()->setFillColor(sf::Color::Green);
+		m_racerNPC->getComponent<Transform>()->setScale(sf::Vector2f(2.f, 2.f));
+
+		if (!resourceMan.loadTexture("sprites/mushroom", "png")) {
+			MESSAGE("BaseApp", "Init", "cant load the texture");
+		}
+		m_racerNPC->setTexture(resourceMan.getTexture("sprites/mushroom"));
+
+		m_racerNPC->setSpeed(120.f);
+		m_racerNPC->setPosition(sf::Vector2f(999.f, 955.f));
+		m_racerNPC->setTarget(sf::Vector2f(1320.f, 855.f));
+	}
+
+	m_currentWaypointIndex_NPC = 0;
+
+	m_waypoints.clear();
+	m_waypoints.push_back(sf::Vector2f(1320.f, 855.f));
+	m_waypoints.push_back(sf::Vector2f(1320.f, 600.f));
+	m_waypoints.push_back(sf::Vector2f(1100.f, 400.f));
+	m_waypoints.push_back(sf::Vector2f(750.f, 350.f));
+	m_waypoints.push_back(sf::Vector2f(600.f, 470.f));
+	m_waypoints.push_back(sf::Vector2f(550.f, 700.f));
+	m_waypoints.push_back(sf::Vector2f(750.f, 850.f));
+	m_waypoints.push_back(sf::Vector2f(950.f, 950.f));
+	m_waypoints.push_back(sf::Vector2f(1320.f, 855.f));
 
 	return true;
 }
@@ -89,24 +103,43 @@ void BaseApp::update() {
 	if (!m_ACircle.isNull()) {
 		m_ACircle->update(m_windowPtr->deltaTime.asSeconds());
 
-		if (m_currentWaypointIndex < m_waypoints.size()) {
-			sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex];
+		if (m_currentWaypointIndex_Circle < m_waypoints.size()) {
+			sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex_Circle];
 			sf::Vector2f currentPos = m_ACircle->getComponent<Transform>()->getPosition();
 
-			// Distancia al waypoint usando <cmath>
-			double distanceToTarget = std::sqrt(
-				std::pow(targetPos.x - currentPos.x, 2) +
-				std::pow(targetPos.y - currentPos.y, 2)
-			);
+			float dx = targetPos.x - currentPos.x;
+			float dy = targetPos.y - currentPos.y;
+			float distanceToTarget = std::sqrt(dx * dx + dy * dy);
 
 			if (distanceToTarget < 10.0f) {
-				m_currentWaypointIndex++;
+				m_currentWaypointIndex_Circle++;
 			}
 			else {
 				m_ACircle->getComponent<Transform>()->seek(
-					targetPos, 100.f, m_windowPtr->deltaTime.asSeconds(), 10.f
+					targetPos,
+					100.f,
+					m_windowPtr->deltaTime.asSeconds(),
+					10.f
 				);
 			}
+		}
+	}
+
+	if (m_racerNPC) {
+		m_racerNPC->update(m_windowPtr->deltaTime.asSeconds());
+
+		sf::Vector2f npcPos = m_racerNPC->getPosition();
+		sf::Vector2f target = m_waypoints[m_currentWaypointIndex_NPC];
+
+		float dx = target.x - npcPos.x;
+		float dy = target.y - npcPos.y;
+		float distance = std::sqrt(dx * dx + dy * dy);
+
+		if (distance < 10.0f) {
+			m_currentWaypointIndex_NPC++;
+			if (m_currentWaypointIndex_NPC >= m_waypoints.size())
+				m_currentWaypointIndex_NPC = 0;
+			m_racerNPC->setTarget(m_waypoints[m_currentWaypointIndex_NPC]);
 		}
 	}
 
@@ -120,16 +153,14 @@ void BaseApp::render() {
 
 	m_windowPtr->clear();
 
-	if (m_shapePtr) {
-		m_shapePtr->render(m_windowPtr);
-	}
-
 	if (m_ATrack) {
 		m_ATrack->getComponent<CShape>()->render(m_windowPtr);
 	}
-
 	if (m_ACircle) {
 		m_ACircle->getComponent<CShape>()->render(m_windowPtr);
+	}
+	if (m_racerNPC) {
+		m_racerNPC->getComponent<CShape>()->render(m_windowPtr);
 	}
 
 	m_windowPtr->render();

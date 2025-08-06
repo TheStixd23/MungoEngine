@@ -2,6 +2,7 @@
 #include "Prerequisites.h"
 
 class Window;
+class Actor;
 
 class
 	EngineGUI
@@ -29,6 +30,9 @@ public:
 
 	void
 		SetupMungoEngineGUIStyle();
+
+	void
+		outliner();
 
 private:
 
