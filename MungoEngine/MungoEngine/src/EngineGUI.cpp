@@ -41,7 +41,6 @@ void
 EngineGUI::SetupMungoEngineGUIStyle() {
     ImGuiStyle& style = ImGui::GetStyle();
 
-    // Bordes y elementos redondeados sutilmente
     style.WindowRounding = 4.0f;
     style.FrameRounding = 4.0f;
     style.GrabRounding = 4.0f;
@@ -55,99 +54,106 @@ EngineGUI::SetupMungoEngineGUIStyle() {
     style.ItemInnerSpacing = ImVec2(6, 4);
 
     ImVec4* colors = style.Colors;
-    // Negro absoluto para el fondo
-    colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
-    colors[ImGuiCol_ChildBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
-    colors[ImGuiCol_PopupBg] = ImVec4(0.04f, 0.0f, 0.09f, 1.00f);
+
+    ImVec4 accent = ImVec4(0.08f, 0.90f, 0.90f, 1.00f);
+    ImVec4 accentDim = ImVec4(0.05f, 0.70f, 0.70f, 1.00f);
+    ImVec4 bg0 = ImVec4(0.02f, 0.03f, 0.05f, 1.00f);
+    ImVec4 bg1 = ImVec4(0.05f, 0.07f, 0.10f, 1.00f);
+    ImVec4 bg2 = ImVec4(0.08f, 0.10f, 0.14f, 1.00f);
+    ImVec4 bg3 = ImVec4(0.12f, 0.15f, 0.20f, 1.00f);
+
+    colors[ImGuiCol_WindowBg] = bg0;
+    colors[ImGuiCol_ChildBg] = bg0;
+    colors[ImGuiCol_PopupBg] = bg1;
     colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.85f);
 
-    // Texto blanco total
     colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-    colors[ImGuiCol_TextDisabled] = ImVec4(0.5f, 0.1f, 0.7f, 0.6f); // Morado apagado
+    colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.70f, 0.75f, 0.60f);
 
-    // MORADO NEÓN para todo lo interactivo (bordes, líneas, botones, tabs)
-    ImVec4 neon = ImVec4(0.89f, 0.08f, 1.00f, 1.00f); // Fuchsia brillante
+    colors[ImGuiCol_FrameBg] = bg1;
+    colors[ImGuiCol_FrameBgHovered] = accentDim;
+    colors[ImGuiCol_FrameBgActive] = accent;
 
-    colors[ImGuiCol_Border] = neon;
-    colors[ImGuiCol_BorderShadow] = ImVec4(0.2f, 0.0f, 0.3f, 0.7f);
-    colors[ImGuiCol_FrameBg] = ImVec4(0.08f, 0.00f, 0.13f, 1.00f);
-    colors[ImGuiCol_FrameBgHovered] = neon;
-    colors[ImGuiCol_FrameBgActive] = neon;
-    colors[ImGuiCol_TitleBg] = ImVec4(0.13f, 0.0f, 0.2f, 1.00f);
-    colors[ImGuiCol_TitleBgActive] = neon;
-    colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.05f, 0.0f, 0.12f, 1.00f);
-    colors[ImGuiCol_MenuBarBg] = ImVec4(0.04f, 0.0f, 0.07f, 1.00f);
-    colors[ImGuiCol_ScrollbarBg] = ImVec4(0.12f, 0.0f, 0.15f, 1.00f);
-    colors[ImGuiCol_ScrollbarGrab] = neon;
-    colors[ImGuiCol_ScrollbarGrabHovered] = neon;
-    colors[ImGuiCol_ScrollbarGrabActive] = neon;
-    colors[ImGuiCol_CheckMark] = neon;
-    colors[ImGuiCol_SliderGrab] = neon;
-    colors[ImGuiCol_SliderGrabActive] = neon;
-    colors[ImGuiCol_Button] = ImVec4(0.18f, 0.0f, 0.25f, 1.00f);
-    colors[ImGuiCol_ButtonHovered] = neon;
-    colors[ImGuiCol_ButtonActive] = neon;
-    colors[ImGuiCol_Header] = ImVec4(0.20f, 0.0f, 0.25f, 1.00f);
-    colors[ImGuiCol_HeaderHovered] = neon;
-    colors[ImGuiCol_HeaderActive] = neon;
-    colors[ImGuiCol_Separator] = neon;
-    colors[ImGuiCol_SeparatorHovered] = neon;
-    colors[ImGuiCol_SeparatorActive] = neon;
-    colors[ImGuiCol_ResizeGrip] = neon;
-    colors[ImGuiCol_ResizeGripHovered] = neon;
-    colors[ImGuiCol_ResizeGripActive] = neon;
-    colors[ImGuiCol_Tab] = ImVec4(0.14f, 0.0f, 0.19f, 1.00f);
-    colors[ImGuiCol_TabHovered] = neon;
-    colors[ImGuiCol_TabActive] = neon;
-    colors[ImGuiCol_TabUnfocused] = ImVec4(0.13f, 0.0f, 0.16f, 1.00f);
-    colors[ImGuiCol_TabUnfocusedActive] = neon;
-    colors[ImGuiCol_PlotLines] = neon;
-    colors[ImGuiCol_PlotLinesHovered] = neon;
-    colors[ImGuiCol_PlotHistogram] = neon;
-    colors[ImGuiCol_PlotHistogramHovered] = neon;
-    colors[ImGuiCol_TextSelectedBg] = neon;
-    colors[ImGuiCol_DragDropTarget] = neon;
-    colors[ImGuiCol_NavHighlight] = neon;
-    colors[ImGuiCol_NavWindowingHighlight] = neon;
+    colors[ImGuiCol_TitleBg] = bg1;
+    colors[ImGuiCol_TitleBgActive] = accentDim;
+    colors[ImGuiCol_TitleBgCollapsed] = bg1;
+    colors[ImGuiCol_MenuBarBg] = bg1;
+
+    colors[ImGuiCol_ScrollbarBg] = bg1;
+    colors[ImGuiCol_ScrollbarGrab] = accentDim;
+    colors[ImGuiCol_ScrollbarGrabHovered] = accent;
+    colors[ImGuiCol_ScrollbarGrabActive] = accent;
+
+    colors[ImGuiCol_CheckMark] = accent;
+    colors[ImGuiCol_SliderGrab] = accentDim;
+    colors[ImGuiCol_SliderGrabActive] = accent;
+
+    colors[ImGuiCol_Button] = bg2;
+    colors[ImGuiCol_ButtonHovered] = accentDim;
+    colors[ImGuiCol_ButtonActive] = accent;
+
+    colors[ImGuiCol_Header] = bg2;
+    colors[ImGuiCol_HeaderHovered] = accentDim;
+    colors[ImGuiCol_HeaderActive] = accent;
+
+    colors[ImGuiCol_Separator] = accentDim;
+    colors[ImGuiCol_SeparatorHovered] = accent;
+    colors[ImGuiCol_SeparatorActive] = accent;
+
+    colors[ImGuiCol_ResizeGrip] = accentDim;
+    colors[ImGuiCol_ResizeGripHovered] = accent;
+    colors[ImGuiCol_ResizeGripActive] = accent;
+
+    colors[ImGuiCol_Tab] = bg2;
+    colors[ImGuiCol_TabHovered] = accentDim;
+    colors[ImGuiCol_TabActive] = accent;
+    colors[ImGuiCol_TabUnfocused] = bg1;
+    colors[ImGuiCol_TabUnfocusedActive] = accentDim;
+
+    colors[ImGuiCol_PlotLines] = accent;
+    colors[ImGuiCol_PlotLinesHovered] = accent;
+    colors[ImGuiCol_PlotHistogram] = accent;
+    colors[ImGuiCol_PlotHistogramHovered] = accent;
+
+    colors[ImGuiCol_TextSelectedBg] = ImVec4(accent.x, accent.y, accent.z, 0.35f);
+    colors[ImGuiCol_DragDropTarget] = accent;
+    colors[ImGuiCol_NavHighlight] = accent;
+    colors[ImGuiCol_NavWindowingHighlight] = accent;
     colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.40f);
 
-    // Extra: Si quieres que hasta los child-windows, combos y popups sean neón
-    colors[ImGuiCol_ChildBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-    colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.0f, 0.12f, 0.98f);
+    colors[ImGuiCol_Border] = accentDim;
+    colors[ImGuiCol_BorderShadow] = ImVec4(0.0f, 0.0f, 0.0f, 0.70f);
+
+    colors[ImGuiCol_ChildBg] = bg0;
+    colors[ImGuiCol_PopupBg] = ImVec4(0.06f, 0.08f, 0.12f, 0.98f);
 }
 
-
-// ---- BAR MENU tipo Unity ----
 void
 EngineGUI::menuBar()
 {
     if (ImGui::BeginMainMenuBar())
     {
-        /* ====================  FILE  ==================== */
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New Scene", "Ctrl+N")) {/* TODO */ }
-            if (ImGui::MenuItem("Open Scene...", "Ctrl+O")) {/* TODO */ }
-            if (ImGui::MenuItem("Save Scene", "Ctrl+S")) {/* TODO */ }
-            if (ImGui::MenuItem("Save Scene As…")) {/* TODO */ }
+            if (ImGui::MenuItem("New Scene", "Ctrl+N")) {}
+            if (ImGui::MenuItem("Open Scene...", "Ctrl+O")) {}
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S")) {}
+            if (ImGui::MenuItem("Save Scene As…")) {}
             ImGui::Separator();
 
-            /* ----------  Sub-menú con los archivos recientes ---------- */
             if (ImGui::BeginMenu("Recent Files"))
             {
-                // En la práctica, llena este array leyendo un historial.
                 const char* recents[] = { "level01.scene", "tutorial.scene", "myTest.scene" };
                 for (const char* f : recents)
-                    if (ImGui::MenuItem(f)) {/* TODO: abrir f */ }
+                    if (ImGui::MenuItem(f)) {}
                 ImGui::EndMenu();
             }
 
             ImGui::Separator();
-            if (ImGui::MenuItem("Exit", "Alt+F4")) {/* TODO: salir */ }
+            if (ImGui::MenuItem("Exit", "Alt+F4")) {}
             ImGui::EndMenu();
         }
 
-        /* ====================  EDIT  ==================== */
         if (ImGui::BeginMenu("Edit"))
         {
             ImGui::MenuItem("Undo", "Ctrl+Z");
@@ -159,7 +165,6 @@ EngineGUI::menuBar()
             ImGui::EndMenu();
         }
 
-        /* ====================  VIEW  ==================== */
         if (ImGui::BeginMenu("View"))
         {
             ImGui::MenuItem("Hierarchy");
@@ -169,7 +174,6 @@ EngineGUI::menuBar()
             ImGui::EndMenu();
         }
 
-        /* ====================  WINDOW  ==================== */
         if (ImGui::BeginMenu("Window"))
         {
             ImGui::MenuItem("Maximize");
@@ -178,7 +182,6 @@ EngineGUI::menuBar()
             ImGui::EndMenu();
         }
 
-        /* ====================  HELP  ==================== */
         if (ImGui::BeginMenu("Help"))
         {
             ImGui::MenuItem("Documentation  (F1)");
@@ -191,11 +194,10 @@ EngineGUI::menuBar()
     }
 }
 
-// ---- HIERARCHY ----
 void
 EngineGUI::hierarchy(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     ImGui::Begin("Hierarchy");
-    for (int i = 0; i < actors.size(); ++i) {
+    for (int i = 0; i < (int)actors.size(); ++i) {
         std::string name = actors[i]->getName();
         bool isSelected = (selectedActorIndex == i);
         if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
@@ -205,21 +207,19 @@ EngineGUI::hierarchy(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
             ImVec2 p_min = ImGui::GetItemRectMin();
             ImVec2 p_max = ImGui::GetItemRectMax();
-            draw_list->AddRect(p_min, p_max, IM_COL32(180, 40, 255, 255), 4.0f, 0, 3.5f);
+            draw_list->AddRect(p_min, p_max, IM_COL32(20, 220, 220, 255), 4.0f, 0, 3.5f);
         }
     }
     ImGui::End();
 }
 
-// ---- INSPECTOR (modifica el actor seleccionado con botones XYZ a color y sliders) ----
 void
 EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     ImGui::Begin("Inspector");
 
-    if (selectedActorIndex >= 0 && selectedActorIndex < actors.size() && actors[selectedActorIndex]) {
+    if (selectedActorIndex >= 0 && selectedActorIndex < (int)actors.size() && actors[selectedActorIndex]) {
         auto actor = actors[selectedActorIndex];
 
-        // --- Bloque nuevo que pediste ---
         bool isStatic = false;
         ImGui::Checkbox("##Static", &isStatic);
         ImGui::SameLine();
@@ -232,9 +232,7 @@ EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
         ImGui::InputText("##ObjectName", objectName, IM_ARRAYSIZE(objectName));
         ImGui::SameLine();
 
-        if (ImGui::Button("Icon")) {
-            // Lógica del botón de icono aquí
-        }
+        if (ImGui::Button("Icon")) {}
 
         ImGui::Separator();
 
@@ -248,7 +246,6 @@ EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
         ImGui::Combo("Layer", &currentLayer, layers, IM_ARRAYSIZE(layers));
 
         ImGui::Separator();
-        // --- Fin bloque nuevo ---
 
         auto transform = actor->getComponent<Transform>();
         if (transform) {
@@ -258,70 +255,66 @@ EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
 
             ImGui::PushItemWidth(60);
 
-            // Position
             ImGui::Text("Position");
             ImGui::SameLine(100);
             ImGui::PushID("PosX");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.25f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.30f, 0.30f, 1.0f));
             ImGui::Button("X"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##PosX", &pos[0], 0.5f);
             ImGui::PopID();
 
             ImGui::SameLine(); ImGui::PushID("PosY");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.85f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.30f, 0.85f, 0.50f, 1.0f));
             ImGui::Button("Y"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##PosY", &pos[1], 0.5f);
             ImGui::PopID();
 
             ImGui::SameLine(); ImGui::PushID("PosZ");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.85f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.30f, 0.55f, 0.95f, 1.0f));
             ImGui::Button("Z"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##PosZ", &pos[2], 0.5f);
             ImGui::PopID();
 
-            // Rotation
             ImGui::Text("Rotation");
             ImGui::SameLine(100);
             ImGui::PushID("RotX");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.25f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.30f, 0.30f, 1.0f));
             ImGui::Button("X"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##RotX", &rot[0], 1.0f);
             ImGui::PopID();
 
             ImGui::SameLine(); ImGui::PushID("RotY");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.85f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.30f, 0.85f, 0.50f, 1.0f));
             ImGui::Button("Y"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##RotY", &rot[1], 1.0f);
             ImGui::PopID();
 
             ImGui::SameLine(); ImGui::PushID("RotZ");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.85f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.30f, 0.55f, 0.95f, 1.0f));
             ImGui::Button("Z"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##RotZ", &rot[2], 1.0f);
             ImGui::PopID();
 
-            // Scale
             ImGui::Text("Scale");
             ImGui::SameLine(100);
             ImGui::PushID("ScaX");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.25f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.30f, 0.30f, 1.0f));
             ImGui::Button("X"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##ScaX", &sca[0], 0.05f, 0.01f, 100.0f);
             ImGui::PopID();
 
             ImGui::SameLine(); ImGui::PushID("ScaY");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.85f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.30f, 0.85f, 0.50f, 1.0f));
             ImGui::Button("Y"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##ScaY", &sca[1], 0.05f, 0.01f, 100.0f);
             ImGui::PopID();
 
             ImGui::SameLine(); ImGui::PushID("ScaZ");
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.85f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.30f, 0.55f, 0.95f, 1.0f));
             ImGui::Button("Z"); ImGui::PopStyleColor();
             ImGui::SameLine(); ImGui::DragFloat("##ScaZ", &sca[2], 0.05f, 0.01f, 100.0f);
             ImGui::PopID();
 
-            // Aplicar cambios
             transform->setPosition(sf::Vector2f(pos[0], pos[1]));
             transform->setRotation(sf::Vector2f(rot[0], rot[1]));
             transform->setScale(sf::Vector2f(sca[0], sca[1]));
@@ -333,9 +326,6 @@ EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
     ImGui::End();
 }
 
-
-
-// ---- CONSOLE ----
 void
 EngineGUI::console() {
     ImGui::Begin("Console");
@@ -343,20 +333,18 @@ EngineGUI::console() {
     ImGui::End();
 }
 
-// ---- OUTLINE DRAW ----
 void
 EngineGUI::drawSelectedOutline(
     sf::RenderWindow* renderWindow,
     const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors)
 {
     int idx = selectedActorIndex;
-    if (idx >= 0 && idx < actors.size() && actors[idx]) {
+    if (idx >= 0 && idx < (int)actors.size() && actors[idx]) {
         auto shapeComp = actors[idx]->getComponent<CShape>();
         if (shapeComp) {
             auto shapePtr = shapeComp->getShapePtr();
             if (shapePtr) {
-                float thickness = 2.0f; // Default
-                // If is track, thinner
+                float thickness = 2.0f;
                 if (actors[idx]->getName() == "Track Actor")
                     thickness = 0.5f;
                 sf::Color oldOutlineColor = shapePtr->getOutlineColor();
@@ -364,11 +352,10 @@ EngineGUI::drawSelectedOutline(
                 sf::Color oldFill = shapePtr->getFillColor();
 
                 shapePtr->setOutlineThickness(thickness);
-                shapePtr->setOutlineColor(sf::Color(180, 40, 255)); // neon purple
+                shapePtr->setOutlineColor(sf::Color(20, 220, 220));
                 shapePtr->setFillColor(sf::Color(0, 0, 0, 0));
                 renderWindow->draw(*shapePtr);
 
-                // Restore
                 shapePtr->setOutlineColor(oldOutlineColor);
                 shapePtr->setOutlineThickness(oldThickness);
                 shapePtr->setFillColor(oldFill);
@@ -377,8 +364,6 @@ EngineGUI::drawSelectedOutline(
     }
 }
 
-
-// ---- FILE MANAGER PANEL ----
 void
 EngineGUI::fileManagerPanel(std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     ImGui::Begin("File Manager");

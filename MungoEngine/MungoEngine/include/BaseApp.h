@@ -7,7 +7,6 @@
 #include <ESC/Actor.h>
 #include "EngineGUI.h"
 #include "./ESC/A_Racer.h"
-
 #include "./ESC/A_Player.h"
 #include "Systems/PlayerInputSystem.h"
 #include "Systems/SteeringSystem.h"
