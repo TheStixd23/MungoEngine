@@ -17,6 +17,7 @@ public:
 	void destroy() override;
 
 	void setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
+	const std::string& getName() const { return m_name; }
 
 	template <typename T>
 	EngineUtilities::TSharedPointer<T> getComponent();

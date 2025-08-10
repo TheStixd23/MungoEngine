@@ -1,8 +1,8 @@
 ﻿#pragma once
-
 #include "Prerequisites.h"
 #include <./ESC/Component.h>
 #include "./ESC/Texture.h"
+
 
 class Window;
 
@@ -10,8 +10,8 @@ class CShape : public Component {
 public:
 	CShape() = default;
 
-	CShape(ShapeType shapeType)
-		: m_shapePtr(nullptr),
+	CShape(ShapeType shapeType) :
+		m_shapePtr(nullptr),
 		m_shapeType(ShapeType::EMPTY),
 		Component(ComponentType::SHAPE) {
 	}
@@ -23,16 +23,17 @@ public:
 	void update(float deltaTime) override;
 	void render(const EngineUtilities::TSharedPointer<Window>& window) override;
 	void destroy() override;
-
 	void setPosition(float x, float y);
 	void setPosition(const sf::Vector2f& position);
 	void setFillColor(const sf::Color& color);
 	void setRotation(float angle);
 	void setScale(const sf::Vector2f& scl);
 	void setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
+	EngineUtilities::TSharedPointer<sf::Shape> getShapePtr() { return m_shapePtr; }
 
 private:
 	EngineUtilities::TSharedPointer<sf::Shape> m_shapePtr;
 	ShapeType m_shapeType;
 	sf::VertexArray* m_line;
 };
+

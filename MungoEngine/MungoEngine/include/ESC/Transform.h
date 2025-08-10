@@ -1,16 +1,16 @@
 #pragma once
-
-#include "Prerequisites.h"
-#include "./ESC/Component.h"
-#include "Window.h"
+#include <SFML/System/Vector2.hpp>
 #include <cmath>
+#include "Prerequisites.h"
+#include "Component.h"
+#include "Window.h"
 
 class Window;
 
 class Transform : public Component {
 public:
-	Transform()
-		: m_position(0.f, 0.f),
+	Transform() :
+		m_position(0.f, 0.f),
 		m_rotation(0.f, 0.f),
 		m_scale(1.f, 1.f),
 		Component(ComponentType::TRANSFORM) {
@@ -21,7 +21,7 @@ public:
 	void start() override {}
 	void update(float deltaTime) override {}
 	void render(const EngineUtilities::TSharedPointer<Window>& window) override {}
-	void destroy() override {}
+	void destroy() {}
 
 	void seek(const sf::Vector2f& targetPosition,
 		float speed,
@@ -29,9 +29,9 @@ public:
 		float range) {
 		sf::Vector2f direction = targetPosition - m_position;
 		float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-
 		if (length > range) {
-			direction /= length;
+			direction.x /= length;
+			direction.y /= length;
 			m_position += direction * speed * deltaTime;
 		}
 	}

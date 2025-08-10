@@ -1,43 +1,54 @@
 #pragma once
 #include "Prerequisites.h"
-
+#include <vector>
 class Window;
 class Actor;
 
+
 class
-	EngineGUI
-{
+    EngineGUI {
 public:
-	EngineGUI() = default;
+    EngineGUI() = default;
+    ~EngineGUI() = default;
 
-	~EngineGUI() = default;
+    void
+        init(const EngineUtilities::TSharedPointer<Window>& window);
 
-	void
-		init(const EngineUtilities::TSharedPointer<Window>& window);
+    void
+        update(const EngineUtilities::TSharedPointer<Window>& window,
+            sf::Time deltaTime);
 
-	void
-		update(const EngineUtilities::TSharedPointer<Window>& window,
-			sf::Time deltaTime);
+    void
+        render(const EngineUtilities::TSharedPointer<Window>& window);
 
-	void
-		render(const EngineUtilities::TSharedPointer<Window>& window);
+    void
+        destroy();
 
-	void
-		destroy();
+    void
+        processEvent(const sf::Window& window, const sf::Event& event);
 
-	void
-		processEvent(const sf::Window& window, const sf::Event& event);
+    void
+        SetupMungoEngineGUIStyle();
 
-	void
-		SetupMungoEngineGUIStyle();
+    void
+        menuBar();
 
-	void
-		outliner();
+    void
+        hierarchy(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors);
 
-private:
+    void
+        inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors);
 
-public:
-	sf::Time deltaTime;
+    void
+        console();
+
+    void
+        drawSelectedOutline(sf::RenderWindow* renderWindow,
+            const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors);
+
+    void
+        fileManagerPanel(std::vector<EngineUtilities::TSharedPointer<Actor>>& actors);
 
 
+    int selectedActorIndex = -1;
 };

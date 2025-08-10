@@ -3,7 +3,7 @@
 #include "Component.h"
 
 class
-Texture : public Component {
+	Texture : public Component {
 public:
 
 	Texture() = default;
@@ -17,21 +17,21 @@ public:
 
 
 	virtual
-	~Texture() = default;
+		~Texture() = default;
 
 	void
-	start() override {};
+		start() override {};
 
 	void
-	update(float deltaTime) override {};
+		update(float deltaTime) override {};
 
 	void
-	render(const EngineUtilities::TSharedPointer<Window>& window) override {};
+		render(const EngineUtilities::TSharedPointer<Window>& window) override {};
 
 	void
 		destroy() override {};
 
-	sf::Texture & 
+	sf::Texture&
 		getTexture() {
 		return m_texture;
 	}
