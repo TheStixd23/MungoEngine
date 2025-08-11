@@ -20,15 +20,14 @@
 #include "Circuits/Circuit1.h"
 #include "../include/Systems/RaceSystem.h"
 
- /**
-  * @brief Destructor por defecto; la gestión principal la realizan smart pointers.
-  */
+ // === CONFIGURA AQUÍ EL ESTILO DE COUNTDOWN ===
+ // 1 = Texto XXL con sombra
+ // 2 = Pastilla redondeada translúcida
+ // 3 = Animación "GO!" con rebote
+#define COUNTDOWN_STYLE 1
+
 BaseApp::~BaseApp() {}
 
-/**
- * @brief Bucle principal de la aplicación: init → loop (events, update, render) → destroy.
- * @return Código de salida (0 si no hay errores).
- */
 int BaseApp::run() {
     if (!init()) {
         ERROR("BaseApp", "run", "Initialization failed.");
@@ -43,13 +42,6 @@ int BaseApp::run() {
     return 0;
 }
 
-/**
- * @brief Inicializa ventana, actores y sistemas (input, steering, waypoints, carrera).
- * @return `true` si todo se inicializa correctamente.
- *
- * Crea la pista, jugador y NPC; configura texturas; carga waypoints del circuito;
- * configura y “primea” sistemas de IA; arma el countdown para iniciar la carrera.
- */
 bool BaseApp::init() {
     ResourceManager& resourceMan = ResourceManager::getInstance();
 
@@ -171,15 +163,6 @@ bool BaseApp::init() {
     return true;
 }
 
-/**
- * @brief Actualiza estado de ventana, sistemas y lógica de carrera; renderiza HUD/overlays de carrera.
- *
- * - Countdown: arma y activa la carrera, habilita timing y steering del NPC.
- * - Input: procesa input del jugador solo cuando la carrera está viva.
- * - IA: waypoint follow y steering del NPC cada frame.
- * - Carrera: actualiza progreso, vueltas, standings y fin de carrera.
- * - HUD: muestra lap/posición y tiempos; overlay de finish con botón de reintento.
- */
 void BaseApp::update() {
     if (!m_windowPtr.isNull()) {
         m_windowPtr->update();
@@ -244,18 +227,100 @@ void BaseApp::update() {
         }
     }
 
+    // === COUNTDOWN overlay (solo presentación) ===
     if (!m_raceLive && !m_raceFinished && !cdText.empty()) {
+
+#if COUNTDOWN_STYLE == 1
+        // --- ESTILO 1: TEXTO XXL con sombra ---
         ImGui::SetNextWindowBgAlpha(0.0f);
         ImGui::SetNextWindowPos(
             ImVec2((float)m_windowPtr->m_windowPtr->getSize().x * 0.5f,
                 (float)m_windowPtr->m_windowPtr->getSize().y * 0.35f),
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
         ImGui::Begin("##countdown_overlay", nullptr,
             ImGuiWindowFlags_NoDecoration |
             ImGuiWindowFlags_NoInputs |
             ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Text("%s", cdText.c_str());
+
+        ImGui::SetWindowFontScale(4.0f);
+
+        // Sombra negra (corrección sin operador + para ImVec2)
+        ImVec2 shadowOffset(2, 2);
+        ImVec2 cursor = ImGui::GetCursorPos();
+        ImGui::SetCursorPos(ImVec2(cursor.x + shadowOffset.x, cursor.y + shadowOffset.y));
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 0, 0, 200));
+        ImGui::TextUnformatted(cdText.c_str());
+        ImGui::PopStyleColor();
+
+        // Texto principal cian
+        ImGui::SetCursorPos(cursor);
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(20, 220, 220, 255));
+        ImGui::TextUnformatted(cdText.c_str());
+        ImGui::PopStyleColor();
+
+        ImGui::SetWindowFontScale(1.0f);
         ImGui::End();
+
+#elif COUNTDOWN_STYLE == 2
+        // --- ESTILO 2: Pastilla redondeada ---
+        ImGui::SetNextWindowBgAlpha(0.35f);
+        ImGui::SetNextWindowPos(
+            ImVec2((float)m_windowPtr->m_windowPtr->getSize().x * 0.5f,
+                (float)m_windowPtr->m_windowPtr->getSize().y * 0.35f),
+            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 16.0f);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05f, 0.08f, 0.12f, 0.6f));
+
+        ImGui::Begin("##countdown_overlay", nullptr,
+            ImGuiWindowFlags_NoDecoration |
+            ImGuiWindowFlags_NoInputs |
+            ImGuiWindowFlags_AlwaysAutoResize);
+
+        ImGui::SetWindowFontScale(3.2f);
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.08f, 0.90f, 0.90f, 1.0f));
+        ImGui::Text(" %s ", cdText.c_str());
+        ImGui::PopStyleColor();
+        ImGui::SetWindowFontScale(1.0f);
+
+        ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar();
+
+#elif COUNTDOWN_STYLE == 3
+        // --- ESTILO 3: GO! con animación ---
+        static float goTimer = 0.f;
+
+        ImGui::SetNextWindowBgAlpha(0.0f);
+        ImGui::SetNextWindowPos(
+            ImVec2((float)m_windowPtr->m_windowPtr->getSize().x * 0.5f,
+                (float)m_windowPtr->m_windowPtr->getSize().y * 0.35f),
+            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+        ImGui::Begin("##countdown_overlay", nullptr,
+            ImGuiWindowFlags_NoDecoration |
+            ImGuiWindowFlags_NoInputs |
+            ImGuiWindowFlags_AlwaysAutoResize);
+
+        float scale = 4.0f;
+        if (cdText == "GO!") {
+            goTimer += m_windowPtr->deltaTime.asSeconds();
+            float s = 1.0f + 0.15f * std::sin(std::min(goTimer, 0.6f) * 10.0f);
+            scale *= s;
+        }
+        else {
+            goTimer = 0.f;
+        }
+
+        ImGui::SetWindowFontScale(scale);
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 235, 80, 255));
+        ImGui::TextUnformatted(cdText.c_str());
+        ImGui::PopStyleColor();
+        ImGui::SetWindowFontScale(1.0f);
+
+        ImGui::End();
+#endif
     }
 
     if (!m_raceSystem.isNull() && !m_raceFinished) {
@@ -339,9 +404,6 @@ void BaseApp::update() {
     m_engineGUI.fileManagerPanel(actorsVector);
 }
 
-/**
- * @brief Secuencia de dibujado: limpia, renderiza actores y GUI, presenta en pantalla.
- */
 void BaseApp::render() {
     if (m_windowPtr.isNull()) return;
     m_windowPtr->clear();
@@ -354,19 +416,10 @@ void BaseApp::render() {
     m_windowPtr->display();
 }
 
-/**
- * @brief Libera recursos propios de la GUI (otros recursos los manejan smart pointers).
- */
 void BaseApp::destroy() {
     m_engineGUI.destroy();
 }
 
-/**
- * @brief Reinicia el estado de la carrera y de los sistemas relacionados (posiciones, timings, NPC, etc.).
- *
- * Recoloca jugador y NPC, reinstancia WaypointFollowSystem y RaceSystem, reinicia countdown y
- * desactiva el cronometraje hasta el próximo arranque de carrera.
- */
 void BaseApp::resetRace() {
     if (!m_player.isNull()) {
         m_player->setPosition(sf::Vector2f(1160.f, 450.f));
