@@ -4,21 +4,49 @@
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
 
+/**
+ * @brief Calcula la longitud (magnitud) de un vector 2D.
+ * @param v Vector 2D.
+ * @return Longitud del vector.
+ */
 static inline float vecLength(const sf::Vector2f& v) {
     return std::sqrt(v.x * v.x + v.y * v.y);
 }
+
+/**
+ * @brief Normaliza un vector 2D.
+ * @param v Vector 2D.
+ * @return Vector normalizado. Si la longitud es muy pequeña, retorna (0,0).
+ */
 static inline sf::Vector2f vecNormalize(const sf::Vector2f& v) {
     float L = vecLength(v);
     if (L <= 1e-6f) return { 0.f, 0.f };
     return { v.x / L, v.y / L };
 }
 
+/**
+ * @brief Actualiza el sistema de entrada del jugador.
+ *
+ * Llama a la rutina de control directo o de seguimiento de objetivo,
+ * según el modo configurado en el jugador.
+ *
+ * @param dt Tiempo delta (en segundos) desde el último frame.
+ */
 void PlayerInputSystem::update(float dt) {
     if (!cfg.player) return;
     if (cfg.player->getControlMode() == PlayerControlMode::Direct) updateDirect(dt);
     else updateTargetSeek();
 }
 
+/**
+ * @brief Procesa la entrada en modo de control directo (teclas WASD o flechas).
+ *
+ * Aplica aceleración en función de las teclas presionadas y fricción
+ * cuando no hay entrada. Limita la velocidad máxima y actualiza
+ * la posición y velocidad del jugador.
+ *
+ * @param dt Tiempo delta (en segundos) desde el último frame.
+ */
 void PlayerInputSystem::updateDirect(float dt) {
     sf::Vector2f a(0.f, 0.f);
 
@@ -55,6 +83,12 @@ void PlayerInputSystem::updateDirect(float dt) {
     cfg.player->setPosition(p);
 }
 
+/**
+ * @brief Procesa la entrada en modo de seguimiento de objetivo (TargetSeek).
+ *
+ * Si se hace clic izquierdo, establece el objetivo del jugador en
+ * la posición del mouse en coordenadas de mundo.
+ */
 void PlayerInputSystem::updateTargetSeek() {
     if (!cfg.renderWindow) return;
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {

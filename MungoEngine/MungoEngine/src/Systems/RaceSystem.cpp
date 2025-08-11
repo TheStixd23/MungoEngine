@@ -1,12 +1,36 @@
+/**
+ * @file RaceSystem.cpp
+ * @brief Implementación del sistema de carreras: progreso en pista, conteo de vueltas, tiempos y clasificación.
+ *
+ * Calcula el avance de cada actor sobre la ruta (medida en metros acumulados),
+ * detecta pasos por checkpoints, arma/desarma el contador de vueltas y lleva
+ * el cronometraje de la vuelta del jugador, incluyendo mejor tiempo.
+ *
+ * @author Hannin Abarca
+ */
+
 #include "Systems/RaceSystem.h"
 #include <cmath>
 #include <limits>
 
+ /**
+  * @brief Distancia euclidiana entre dos puntos.
+  * @param A Punto A.
+  * @param B Punto B.
+  * @return Distancia |B - A|.
+  */
 static inline float dist(const sf::Vector2f& A, const sf::Vector2f& B) {
     float dx = B.x - A.x, dy = B.y - A.y;
     return std::sqrt(dx * dx + dy * dy);
 }
 
+/**
+ * @brief Construye un sistema de carrera con la configuración dada.
+ * @param inCfg Actores participantes, waypoints y radio de checkpoint.
+ *
+ * Inicializa buffers internos (laps, progreso, tiempos) y posiciona a cada actor
+ * en el punto métrico de pista más cercano a su posición actual.
+ */
 RaceSystem::RaceSystem(const RaceConfig& inCfg)
     : cfg(inCfg) {
 
@@ -59,6 +83,10 @@ RaceSystem::RaceSystem(const RaceConfig& inCfg)
     }
 }
 
+/**
+ * @brief Actualiza el estado de carrera: progreso, pasos por checkpoint, vueltas y cronometraje.
+ * @param dt Tiempo transcurrido desde el último frame (s).
+ */
 void RaceSystem::update(float dt) {
     if (!cfg.waypoints || cfg.waypoints->size() < 2) return;
     const auto& W = *cfg.waypoints;
@@ -66,11 +94,13 @@ void RaceSystem::update(float dt) {
     const size_t Na = cfg.actors.size();
     if (Nw < 2 || Na == 0) return;
 
+    // Debounce de conteo de vuelta
     if (lapCooldown > 0.f) {
         lapCooldown -= dt;
         if (lapCooldown < 0.f) lapCooldown = 0.f;
     }
 
+    // Cronometraje de la vuelta del jugador (si está activo)
     if (timingActive) {
         playerLapTime += dt;
     }
@@ -83,6 +113,7 @@ void RaceSystem::update(float dt) {
 
         sf::Vector2f p = getActorPos(a);
 
+        // Checkpoint cercano + avance hacia adelante
         int idx = (laps[i].checkpoint < 0) ? 0 : laps[i].checkpoint;
         int next = (idx + 1) % static_cast<int>(Nw);
 
@@ -100,21 +131,27 @@ void RaceSystem::update(float dt) {
             laps[i].checkpoint = next;
         }
 
+        // Progreso métrico sobre la pista
         float sNow = sAlongPath(p);
         float sPrev = lastS[i];
 
         if (totalLen > 0.f) {
             float ds = sNow - sPrev;
 
+            // Gestión de vueltas solo para el "lap owner"
             if (i == static_cast<size_t>(lapOwnerIndex)) {
+                // Cruce por el "cero" de la pista (de atrás hacia adelante por wrap)
                 if (ds < -0.5f * totalLen && lapCooldown <= 0.f) {
                     if (!lapArmed) {
+                        // Arma el primer cruce; prepara cronómetro de vuelta
                         lapArmed = true;
                         lapCooldown = lapDebounceSec;
                         playerLapTime = 0.f;
                     }
                     else {
+                        // Siguiente cruce cuenta vuelta
                         laps[i].lap += 1;
+
                         if (timingActive) {
                             float thisLap = playerLapTime;
                             if (thisLap > 0.f) {
@@ -136,6 +173,10 @@ void RaceSystem::update(float dt) {
     }
 }
 
+/**
+ * @brief Devuelve el orden actual de corredores (índices) de mayor a menor progreso.
+ * @return Vector con índices ordenados por progreso total descendente.
+ */
 std::vector<int> RaceSystem::getStandings() const {
     std::vector<int> order;
     order.reserve(progress.size());
@@ -147,14 +188,37 @@ std::vector<int> RaceSystem::getStandings() const {
     return order;
 }
 
+/**
+ * @brief Arma o desarma el contador de vuelta para el corredor propietario del conteo.
+ * @param armed `true` para armar (esperar cruce), `false` para desarmar.
+ *
+ * Nota: Esta implementación es intencionalmente mínima para mantener el comportamiento
+ * actual del proyecto. Se expone para control externo desde la aplicación.
+ */
 void RaceSystem::armLapCounter(bool armed)
 {
+    // (Se mantiene vacía para no alterar la lógica actual)
+    // Puedes implementar: lapArmed = armed; lapCooldown = lapDebounceSec;
 }
 
+/**
+ * @brief Define qué corredor (índice) es propietario del conteo de vueltas.
+ * @param idx Índice de actor en `cfg.actors`.
+ *
+ * Nota: Esta implementación es intencionalmente mínima para mantener el comportamiento
+ * actual del proyecto. Se expone para control externo desde la aplicación.
+ */
 void RaceSystem::setLapOwnerIndex(int idx)
 {
+    // (Se mantiene vacía para no alterar la lógica actual)
+    // Puedes implementar: lapOwnerIndex = std::clamp(idx, 0, (int)cfg.actors.size()-1);
 }
 
+/**
+ * @brief Obtiene la posición mundial del actor (vía su componente Transform).
+ * @param a Actor.
+ * @return Posición del actor, o (0,0) si no hay Transform.
+ */
 sf::Vector2f RaceSystem::getActorPos(const EngineUtilities::TSharedPointer<Actor>& a) {
     auto tr = a->getComponent<Transform>();
     if (tr) {
@@ -163,6 +227,13 @@ sf::Vector2f RaceSystem::getActorPos(const EngineUtilities::TSharedPointer<Actor
     return sf::Vector2f{ 0.f, 0.f };
 }
 
+/**
+ * @brief Progreso relativo dentro de un segmento [A,B] del circuito.
+ * @param p Punto a proyectar.
+ * @param a Inicio del segmento.
+ * @param b Final del segmento.
+ * @return t en [0,1] tal que A + t(B-A) es la proyección de p en el segmento.
+ */
 float RaceSystem::segProgress(const sf::Vector2f& p,
     const sf::Vector2f& a,
     const sf::Vector2f& b) const {
@@ -176,6 +247,11 @@ float RaceSystem::segProgress(const sf::Vector2f& p,
     return t;
 }
 
+/**
+ * @brief Distancia acumulada sobre el circuito hasta la proyección de p.
+ * @param p Punto a medir.
+ * @return Longitud s en [0, totalLen) medida a lo largo de la pista.
+ */
 float RaceSystem::sAlongPath(const sf::Vector2f& p) const {
     if (!cfg.waypoints || cfg.waypoints->size() < 2) return 0.f;
     const auto& W = *cfg.waypoints;
@@ -193,8 +269,8 @@ float RaceSystem::sAlongPath(const sf::Vector2f& p) const {
         float t = segProgress(p, A, B);
 
         sf::Vector2f proj{
-          A.x + (B.x - A.x) * t,
-          A.y + (B.y - A.y) * t
+            A.x + (B.x - A.x) * t,
+            A.y + (B.y - A.y) * t
         };
         float dx = proj.x - p.x, dy = proj.y - p.y;
         float d2 = dx * dx + dy * dy;
@@ -212,6 +288,12 @@ float RaceSystem::sAlongPath(const sf::Vector2f& p) const {
     return bestS;
 }
 
+/**
+ * @brief Precalcula longitudes acumuladas de los segmentos y la longitud total del circuito.
+ *
+ * Llena el vector `prefix` con las longitudes acumuladas desde el inicio,
+ * y calcula `totalLen`. Considera el circuito cerrado si `closedLoop` es true.
+ */
 void RaceSystem::buildCircuitMeter() {
     prefix.clear();
     totalLen = 0.f;

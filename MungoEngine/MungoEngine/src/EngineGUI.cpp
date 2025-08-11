@@ -1,3 +1,13 @@
+/**
+ * @file EngineGUI.cpp
+ * @brief Implementación de la interfaz gráfica del motor (menús, jerarquía, inspector, consola, file manager).
+ *
+ * Administra ciclo de vida de ImGui-SFML, estilo visual, ventanas utilitarias, y
+ * herramientas de selección/outline para actores. Permite guardar/cargar escenas simples.
+ *
+ * @author Hannin Abarca
+ */
+
 #include "EngineGUI.h"
 #include "Window.h"
 #include "../include/ESC/Actor.h"
@@ -9,6 +19,10 @@
 
 namespace fs = std::filesystem;
 
+/**
+ * @brief Inicializa ImGui-SFML y estilo; limpia la selección.
+ * @param window Ventana del motor.
+ */
 void
 EngineGUI::init(const EngineUtilities::TSharedPointer<Window>& window) {
     ImGui::SFML::Init(*window->m_windowPtr);
@@ -16,27 +30,47 @@ EngineGUI::init(const EngineUtilities::TSharedPointer<Window>& window) {
     selectedActorIndex = -1;
 }
 
+/**
+ * @brief Actualiza el estado de ImGui con el deltaTime de la ventana.
+ * @param window Ventana del motor.
+ * @param deltaTime Delta de tiempo del frame.
+ */
 void
 EngineGUI::update(const EngineUtilities::TSharedPointer<Window>& window,
     sf::Time deltaTime) {
     ImGui::SFML::Update(*window->m_windowPtr, deltaTime);
 }
 
+/**
+ * @brief Renderiza todos los elementos ImGui en la ventana provista.
+ * @param window Ventana del motor.
+ */
 void
 EngineGUI::render(const EngineUtilities::TSharedPointer<Window>& window) {
     ImGui::SFML::Render(*window->m_windowPtr);
 }
 
+/**
+ * @brief Cierra ImGui-SFML y libera recursos asociados.
+ */
 void
 EngineGUI::destroy() {
     ImGui::SFML::Shutdown();
 }
 
+/**
+ * @brief Procesa eventos de SFML y los reenvía a ImGui-SFML.
+ * @param window Ventana SFML origen del evento.
+ * @param event Evento de entrada (teclado/ratón/etc.).
+ */
 void
 EngineGUI::processEvent(const sf::Window& window, const sf::Event& event) {
     ImGui::SFML::ProcessEvent(window, event);
 }
 
+/**
+ * @brief Configura el esquema de colores y parámetros de estilo para la UI.
+ */
 void
 EngineGUI::SetupMungoEngineGUIStyle() {
     ImGuiStyle& style = ImGui::GetStyle();
@@ -128,6 +162,9 @@ EngineGUI::SetupMungoEngineGUIStyle() {
     colors[ImGuiCol_PopupBg] = ImVec4(0.06f, 0.08f, 0.12f, 0.98f);
 }
 
+/**
+ * @brief Dibuja la barra de menú principal con opciones básicas (File, Edit, View, Window, Help).
+ */
 void
 EngineGUI::menuBar()
 {
@@ -194,6 +231,10 @@ EngineGUI::menuBar()
     }
 }
 
+/**
+ * @brief Ventana “Hierarchy”: lista actores y permite seleccionar uno.
+ * @param actors Vector de actores activos.
+ */
 void
 EngineGUI::hierarchy(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     ImGui::Begin("Hierarchy");
@@ -213,6 +254,10 @@ EngineGUI::hierarchy(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
     ImGui::End();
 }
 
+/**
+ * @brief Ventana “Inspector”: muestra y permite editar Transform del actor seleccionado.
+ * @param actors Vector de actores activos.
+ */
 void
 EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     ImGui::Begin("Inspector");
@@ -326,6 +371,9 @@ EngineGUI::inspector(const std::vector<EngineUtilities::TSharedPointer<Actor>>& 
     ImGui::End();
 }
 
+/**
+ * @brief Ventana “Console”: zona para logs simples.
+ */
 void
 EngineGUI::console() {
     ImGui::Begin("Console");
@@ -333,6 +381,14 @@ EngineGUI::console() {
     ImGui::End();
 }
 
+/**
+ * @brief Dibuja un contorno temporal sobre el actor seleccionado.
+ * @param renderWindow Ventana de render SFML.
+ * @param actors Vector de actores presentes.
+ *
+ * Guarda y restaura color/espesor/rielleno para no alterar el estado del actor.
+ * Usa un espesor menor si el actor es la pista.
+ */
 void
 EngineGUI::drawSelectedOutline(
     sf::RenderWindow* renderWindow,
@@ -364,6 +420,12 @@ EngineGUI::drawSelectedOutline(
     }
 }
 
+/**
+ * @brief Ventana “File Manager”: guardar/cargar actores a archivo y listar .txt del directorio actual.
+ * @param actors Vector de actores que se serializan.
+ *
+ * Usa ActorSerializer para operaciones básicas con formato CSV simple (nombre, pos, escala).
+ */
 void
 EngineGUI::fileManagerPanel(std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     ImGui::Begin("File Manager");

@@ -1,4 +1,15 @@
-﻿#include "BaseApp.h"
+﻿/**
+ * @file BaseApp.cpp
+ * @brief Implementación del ciclo de vida principal del juego (init, update, render, destroy) y lógica de carrera.
+ *
+ * Gestiona la ventana, carga de recursos y actores (pista, jugador, NPC),
+ * inicializa sistemas (input, seguimiento de waypoints, steering, carrera),
+ * controla el estado de la carrera (countdown, live, finish) y dibuja HUD/overlays.
+ *
+ * Autor: Hannin Abarca
+ */
+
+#include "BaseApp.h"
 #include "Window.h"
 #include "CShape.h"
 #include "ResourceManager.h"
@@ -9,8 +20,15 @@
 #include "Circuits/Circuit1.h"
 #include "../include/Systems/RaceSystem.h"
 
+ /**
+  * @brief Destructor por defecto; la gestión principal la realizan smart pointers.
+  */
 BaseApp::~BaseApp() {}
 
+/**
+ * @brief Bucle principal de la aplicación: init → loop (events, update, render) → destroy.
+ * @return Código de salida (0 si no hay errores).
+ */
 int BaseApp::run() {
     if (!init()) {
         ERROR("BaseApp", "run", "Initialization failed.");
@@ -25,6 +43,13 @@ int BaseApp::run() {
     return 0;
 }
 
+/**
+ * @brief Inicializa ventana, actores y sistemas (input, steering, waypoints, carrera).
+ * @return `true` si todo se inicializa correctamente.
+ *
+ * Crea la pista, jugador y NPC; configura texturas; carga waypoints del circuito;
+ * configura y “primea” sistemas de IA; arma el countdown para iniciar la carrera.
+ */
 bool BaseApp::init() {
     ResourceManager& resourceMan = ResourceManager::getInstance();
 
@@ -146,6 +171,15 @@ bool BaseApp::init() {
     return true;
 }
 
+/**
+ * @brief Actualiza estado de ventana, sistemas y lógica de carrera; renderiza HUD/overlays de carrera.
+ *
+ * - Countdown: arma y activa la carrera, habilita timing y steering del NPC.
+ * - Input: procesa input del jugador solo cuando la carrera está viva.
+ * - IA: waypoint follow y steering del NPC cada frame.
+ * - Carrera: actualiza progreso, vueltas, standings y fin de carrera.
+ * - HUD: muestra lap/posición y tiempos; overlay de finish con botón de reintento.
+ */
 void BaseApp::update() {
     if (!m_windowPtr.isNull()) {
         m_windowPtr->update();
@@ -305,6 +339,9 @@ void BaseApp::update() {
     m_engineGUI.fileManagerPanel(actorsVector);
 }
 
+/**
+ * @brief Secuencia de dibujado: limpia, renderiza actores y GUI, presenta en pantalla.
+ */
 void BaseApp::render() {
     if (m_windowPtr.isNull()) return;
     m_windowPtr->clear();
@@ -317,10 +354,19 @@ void BaseApp::render() {
     m_windowPtr->display();
 }
 
+/**
+ * @brief Libera recursos propios de la GUI (otros recursos los manejan smart pointers).
+ */
 void BaseApp::destroy() {
     m_engineGUI.destroy();
 }
 
+/**
+ * @brief Reinicia el estado de la carrera y de los sistemas relacionados (posiciones, timings, NPC, etc.).
+ *
+ * Recoloca jugador y NPC, reinstancia WaypointFollowSystem y RaceSystem, reinicia countdown y
+ * desactiva el cronometraje hasta el próximo arranque de carrera.
+ */
 void BaseApp::resetRace() {
     if (!m_player.isNull()) {
         m_player->setPosition(sf::Vector2f(1160.f, 450.f));
