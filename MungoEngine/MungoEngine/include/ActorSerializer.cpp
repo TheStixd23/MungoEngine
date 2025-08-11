@@ -1,26 +1,6 @@
-/**
- * @file ActorSerializer.cpp
- * @brief Implementación de utilidades para serializar y deserializar actores a/desde archivo de texto.
- *
- * Formato actual (por línea): `NombreActor,px,py,sx,sy`
- * donde (px,py) es posición y (sx,sy) es escala. Solo persiste datos básicos del Transform.
- *
- * @author Hannin Abarca
- */
 #include "ActorSerializer.h"
 #include <fstream>
 
- /**
-  * @brief Guarda una lista de actores en un archivo de texto.
-  *
-  * Recorre cada actor y escribe su nombre, posición y escala (del componente Transform)
-  * en formato CSV simple por línea: `Nombre,px,py, sx,sy`.
-  *
-  * @param filename Ruta del archivo de salida.
-  * @param actors   Vector de actores a serializar.
-  * @return `true` si se pudo abrir y escribir el archivo; `false` en caso contrario.
-  * @note Si un actor no tiene Transform, solo se escribe su nombre y se omiten los campos numéricos.
-  */
 bool
 ActorSerializer::saveActorsToFile(const std::string& filename, const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     std::ofstream file(filename);
@@ -38,18 +18,6 @@ ActorSerializer::saveActorsToFile(const std::string& filename, const std::vector
     return true;
 }
 
-/**
- * @brief Carga actores desde un archivo de texto al vector proporcionado.
- *
- * Lee cada línea con el formato `Nombre,px,py,sx,sy`, crea un Actor con ese nombre y
- * establece su Transform (posición y escala). Reemplaza el contenido del vector `actors`.
- *
- * @param filename Ruta del archivo de entrada.
- * @param actors   Vector donde se almacenarán los actores reconstruidos.
- * @return `true` si se pudo abrir y leer el archivo; `false` en caso contrario.
- * @warning No valida tipos ni rangos: asume que el archivo contiene datos bien formados.
- * @note Requiere que el constructor de Actor y sus componentes estén disponibles.
- */
 bool
 ActorSerializer::loadActorsFromFile(const std::string& filename, std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
     std::ifstream file(filename);
