@@ -51,28 +51,28 @@ bool BaseApp::init() {
     m_player = EngineUtilities::MakeShared<A_Player>("Player");
     if (m_player) {
         m_player->getComponent<CShape>()->createShape(CIRCLE);
-        m_player->getComponent<CShape>()->setFillColor(sf::Color::Cyan);
+        m_player->getComponent<CShape>()->setFillColor(sf::Color::White);
         m_player->getComponent<Transform>()->setScale(sf::Vector2f(2.f, 2.f));
         m_player->setPosition(sf::Vector2f(1160.f, 450.f));
         m_player->setControlMode(PlayerControlMode::Direct);
         m_player->setAcceleration(700.f);
         m_player->setFriction(6.f);
         m_player->setMaxSpeed(m_sharedMaxSpeed);
-        if (!resourceMan.loadTexture("sprites/mushroom", "png")) {
+        if (!resourceMan.loadTexture("sprites/Mario", "png")) {
             MESSAGE("BaseApp", "Init", "Can't load texture.");
         }
-        m_player->setTexture(resourceMan.getTexture("sprites/mushroom"));
+        m_player->setTexture(resourceMan.getTexture("sprites/Mario"));
     }
 
     m_racerNPC = EngineUtilities::MakeShared<A_Racer>("NPC_1");
     if (m_racerNPC) {
         m_racerNPC->getComponent<CShape>()->createShape(CIRCLE);
-        m_racerNPC->getComponent<CShape>()->setFillColor(sf::Color::Green);
+        m_racerNPC->getComponent<CShape>()->setFillColor(sf::Color::White);
         m_racerNPC->getComponent<Transform>()->setScale(sf::Vector2f(2.f, 2.f));
-        if (!resourceMan.loadTexture("sprites/mushroom", "png")) {
+        if (!resourceMan.loadTexture("sprites/Luigui", "png")) {
             MESSAGE("BaseApp", "Init", "Can't load texture.");
         }
-        m_racerNPC->setTexture(resourceMan.getTexture("sprites/mushroom"));
+        m_racerNPC->setTexture(resourceMan.getTexture("sprites/Luigui"));
         m_racerNPC->setSpeed(m_sharedMaxSpeed);
         m_racerNPC->setArriveRadius(40.f);
         m_racerNPC->setMode(SteeringMode::Arrive);
