@@ -7,6 +7,7 @@
 #include "ActorPicker.h"
 #include "ActorSerializer.h"
 #include "Circuits/Circuit1.h"
+#include "../include/Systems/RaceSystem.h"
 
 BaseApp::~BaseApp() {}
 
@@ -52,7 +53,7 @@ bool BaseApp::init() {
         m_player->getComponent<CShape>()->createShape(CIRCLE);
         m_player->getComponent<CShape>()->setFillColor(sf::Color::Cyan);
         m_player->getComponent<Transform>()->setScale(sf::Vector2f(2.f, 2.f));
-        m_player->setPosition(sf::Vector2f(880.f, 880.f));
+        m_player->setPosition(sf::Vector2f(1160.f, 450.f));
         m_player->setControlMode(PlayerControlMode::Direct);
         m_player->setAcceleration(700.f);
         m_player->setFriction(6.f);
@@ -76,12 +77,21 @@ bool BaseApp::init() {
         m_racerNPC->setArriveRadius(40.f);
         m_racerNPC->setMode(SteeringMode::Arrive);
         m_racerNPC->enableSteering(false);
-        m_racerNPC->setPosition(sf::Vector2f(855.f, 855.f));
+        m_racerNPC->setPosition(sf::Vector2f(1134.f, 432.f));
     }
     m_npcs.clear();
     if (!m_racerNPC.isNull()) m_npcs.push_back(m_racerNPC);
 
     m_waypoints = getCircuitWaypoints();
+    {
+        const auto n = m_waypoints.size();
+        const auto f = m_waypoints.empty() ? sf::Vector2f(0.f, 0.f) : m_waypoints.front();
+        const auto l = m_waypoints.empty() ? sf::Vector2f(0.f, 0.f) : m_waypoints.back();
+        MESSAGE("BaseApp", "init",
+            ("WP count: " + std::to_string(n) +
+                " first: (" + std::to_string(f.x) + "," + std::to_string(f.y) + ")" +
+                " last: (" + std::to_string(l.x) + "," + std::to_string(l.y) + ")").c_str());
+    }
 
     {
         PlayerInputConfig pic;
@@ -94,19 +104,19 @@ bool BaseApp::init() {
         WaypointFollowConfig wfc;
         wfc.racers = m_npcs;
         wfc.waypoints = &m_waypoints;
-        wfc.arriveRadiusForAdvance = 22.f;
+        wfc.arriveRadiusForAdvance = 8.f;
+        wfc.corridorWidth = 24.f;
+        wfc.lookAhead = 0;
+        wfc.waypointNoiseRadius = 0.f;
+        wfc.mistakeProb = 0.f;
         wfc.reactionDelay = 0.14f;
-        wfc.waypointNoiseRadius = 6.f;
-        wfc.lookAhead = 1;
-        wfc.mistakeProb = 0.03f;
-        wfc.mistakeCooldown = 2.0f;
-        wfc.corridorWidth = 80.f;
         wfc.cornerSlowdownEnabled = true;
         wfc.cornerMinAngleDeg = 25.f;
         wfc.cornerMaxAngleDeg = 95.f;
-        wfc.cornerMinFactor = 0.82f;
+        wfc.cornerMinFactor = 0.78f;
         m_waypointFollowSystem = EngineUtilities::MakeUnique<WaypointFollowSystem>(wfc);
         m_waypointFollowSystem->primeFromPositions();
+        m_waypointFollowSystem->update(0.016f);
     }
 
     {
@@ -148,11 +158,13 @@ void BaseApp::update() {
         if (m_countdown.isFinished()) {
             m_raceLive = true;
             m_raceArmed = false;
+            if (!m_raceSystem.isNull()) {
+                m_raceSystem->setLapOwnerIndex(0);
+                m_raceSystem->armLapCounter(true);
+                m_raceSystem->setTimingActive(true);
+            }
             if (!m_racerNPC.isNull()) {
                 m_racerNPC->enableSteering(true);
-            }
-            if (!m_raceSystem.isNull()) {
-                m_raceSystem->setTimingActive(true);
             }
         }
     }
@@ -170,15 +182,15 @@ void BaseApp::update() {
 
     if (m_raceLive && !m_raceFinished) {
         if (!m_playerInputSystem.isNull()) { m_playerInputSystem->update(dt); }
-        if (!m_waypointFollowSystem.isNull()) { m_waypointFollowSystem->update(dt); }
-        if (!m_steeringSystem.isNull()) { m_steeringSystem->update(dt); }
     }
-
+    if (!m_waypointFollowSystem.isNull()) { m_waypointFollowSystem->update(dt); }
+    if (!m_steeringSystem.isNull()) { m_steeringSystem->update(dt); }
     if (!m_raceSystem.isNull()) { m_raceSystem->update(dt); }
 
     if (!m_raceFinished && !m_raceSystem.isNull()) {
         int playerLap = m_raceSystem->getLapData(0).lap;
-        int npcLap = (m_raceSystem->getLapData(1).lap);
+        int npcLap = m_raceSystem->getLapData(1).lap;
+
         if (!m_npcFinished && npcLap >= m_lapsToWin) {
             m_npcFinished = true;
             if (!m_racerNPC.isNull()) {
@@ -186,39 +198,15 @@ void BaseApp::update() {
                 m_racerNPC->setSpeed(0.f);
             }
         }
+
         if (playerLap >= m_lapsToWin) {
             m_raceFinished = true;
             m_raceLive = false;
             std::vector<int> order = m_raceSystem->getStandings();
             m_finalPlace = -1;
             for (size_t k = 0; k < order.size(); ++k) {
-                if (order[k] == 0) {
-                    m_finalPlace = static_cast<int>(k + 1);
-                    break;
-                }
+                if (order[k] == 0) { m_finalPlace = (int)k + 1; break; }
             }
-        }
-    }
-
-    if (!m_ATrack.isNull())    m_ATrack->update(dt);
-    if (!m_player.isNull())    m_player->update(dt);
-    if (!m_racerNPC.isNull())  m_racerNPC->update(dt);
-
-    actorsVector.clear();
-    if (!m_ATrack.isNull())    actorsVector.push_back(m_ATrack);
-    if (!m_player.isNull())    actorsVector.push_back(m_player);
-    if (!m_racerNPC.isNull())  actorsVector.push_back(m_racerNPC);
-
-    m_engineGUI.menuBar();
-    m_engineGUI.hierarchy(actorsVector);
-    m_engineGUI.inspector(actorsVector);
-    m_engineGUI.console();
-    m_engineGUI.fileManagerPanel(actorsVector);
-
-    if (!ImGui::GetIO().WantCaptureMouse && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        int pickedIdx = ActorPicker::pickActorUnderMouse(m_windowPtr->m_windowPtr.get(), actorsVector);
-        if (pickedIdx != -1) {
-            m_engineGUI.selectedActorIndex = pickedIdx;
         }
     }
 
@@ -240,16 +228,14 @@ void BaseApp::update() {
         std::vector<int> order = m_raceSystem->getStandings();
         int place = -1;
         for (size_t k = 0; k < order.size(); ++k) {
-            if (order[k] == 0) {
-                place = static_cast<int>(k + 1);
-                break;
-            }
+            if (order[k] == 0) { place = (int)k + 1; break; }
         }
         int lapHUD_real = m_raceSystem->getLapData(0).lap;
         int lapHUD = lapHUD_real + 1;
+
         auto fmt = [](float sec) -> std::string {
             if (sec < 0.f) return std::string("--:--.--");
-            int total_ms = static_cast<int>(sec * 1000.f + 0.5f);
+            int total_ms = (int)(sec * 1000.f + 0.5f);
             int minutes = total_ms / 60000;
             int seconds = (total_ms / 1000) % 60;
             int hundred = (total_ms % 1000) / 10;
@@ -259,6 +245,7 @@ void BaseApp::update() {
             };
         float bestLap = m_raceSystem->getPlayerBestLapTime();
         float currLap = m_raceSystem->getPlayerCurrentLapTime();
+
         ImGui::SetNextWindowBgAlpha(0.3f);
         ImGui::SetNextWindowPos(ImVec2(40.f, 40.f), ImGuiCond_Always);
         ImGui::Begin("##race_hud_lappos", nullptr,
@@ -286,7 +273,7 @@ void BaseApp::update() {
             ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::SetWindowFontScale(3.0f);
         if (m_finalPlace == 1) {
-            ImGui::Text("¡Ganaste! 1ro");
+            ImGui::Text("Ganaste! 1ro");
         }
         else if (m_finalPlace > 0) {
             ImGui::Text("Terminaste %do", m_finalPlace);
@@ -301,6 +288,21 @@ void BaseApp::update() {
         }
         ImGui::End();
     }
+
+    if (!m_ATrack.isNull())    m_ATrack->update(dt);
+    if (!m_player.isNull())    m_player->update(dt);
+    if (!m_racerNPC.isNull())  m_racerNPC->update(dt);
+
+    actorsVector.clear();
+    if (!m_ATrack.isNull())    actorsVector.push_back(m_ATrack);
+    if (!m_player.isNull())    actorsVector.push_back(m_player);
+    if (!m_racerNPC.isNull())  actorsVector.push_back(m_racerNPC);
+
+    m_engineGUI.menuBar();
+    m_engineGUI.hierarchy(actorsVector);
+    m_engineGUI.inspector(actorsVector);
+    m_engineGUI.console();
+    m_engineGUI.fileManagerPanel(actorsVector);
 }
 
 void BaseApp::render() {
@@ -321,29 +323,29 @@ void BaseApp::destroy() {
 
 void BaseApp::resetRace() {
     if (!m_player.isNull()) {
-        m_player->setPosition(sf::Vector2f(880.f, 880.f));
+        m_player->setPosition(sf::Vector2f(1160.f, 450.f));
     }
     if (!m_racerNPC.isNull()) {
-        m_racerNPC->setPosition(sf::Vector2f(855.f, 855.f));
+        m_racerNPC->setPosition(sf::Vector2f(1134.f, 432.f));
         m_racerNPC->enableSteering(false);
     }
     {
         WaypointFollowConfig wfc;
         wfc.racers = m_npcs;
         wfc.waypoints = &m_waypoints;
-        wfc.arriveRadiusForAdvance = 22.f;
+        wfc.arriveRadiusForAdvance = 8.f;
+        wfc.corridorWidth = 24.f;
+        wfc.lookAhead = 0;
+        wfc.waypointNoiseRadius = 0.f;
+        wfc.mistakeProb = 0.f;
         wfc.reactionDelay = 0.14f;
-        wfc.waypointNoiseRadius = 6.f;
-        wfc.lookAhead = 1;
-        wfc.mistakeProb = 0.03f;
-        wfc.mistakeCooldown = 2.0f;
-        wfc.corridorWidth = 80.f;
         wfc.cornerSlowdownEnabled = true;
         wfc.cornerMinAngleDeg = 25.f;
         wfc.cornerMaxAngleDeg = 95.f;
-        wfc.cornerMinFactor = 0.82f;
+        wfc.cornerMinFactor = 0.78f;
         m_waypointFollowSystem = EngineUtilities::MakeUnique<WaypointFollowSystem>(wfc);
         m_waypointFollowSystem->primeFromPositions();
+        m_waypointFollowSystem->update(0.016f);
     }
     {
         RaceConfig rc;

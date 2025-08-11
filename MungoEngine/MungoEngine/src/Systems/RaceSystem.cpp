@@ -147,6 +147,14 @@ std::vector<int> RaceSystem::getStandings() const {
     return order;
 }
 
+void RaceSystem::armLapCounter(bool armed)
+{
+}
+
+void RaceSystem::setLapOwnerIndex(int idx)
+{
+}
+
 sf::Vector2f RaceSystem::getActorPos(const EngineUtilities::TSharedPointer<Actor>& a) {
     auto tr = a->getComponent<Transform>();
     if (tr) {

@@ -18,6 +18,7 @@ class RaceSystem {
 public:
     RaceSystem(const RaceConfig& cfg);
     ~RaceSystem() = default;
+
     void update(float dt);
     std::vector<int> getStandings() const;
     const Lap& getLapData(size_t i) const { return laps[i]; }
@@ -25,6 +26,8 @@ public:
     float getPlayerCurrentLapTime() const { return playerLapTime; }
     float getPlayerBestLapTime() const { return (bestLapValid ? playerBestLap : -1.f); }
     bool hasBestLap() const { return bestLapValid; }
+    void armLapCounter(bool armed);
+    void setLapOwnerIndex(int idx);
 
 private:
     RaceConfig cfg;
