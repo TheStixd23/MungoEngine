@@ -74,9 +74,3 @@ MungoEngine/
 | Mover          | **WASD**     |
 | Salir          | **Esc**      |
 
----
-
-## 📜 Licencia
-
-Este proyecto se distribuye bajo la **Licencia MIT**.  
-Consulta el archivo [LICENSE](LICENSE) para más información.
